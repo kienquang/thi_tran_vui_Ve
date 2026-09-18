@@ -1,0 +1,313 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://assets/town.png" type="Texture" id=1]
+[ext_resource path="res://game/world/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game/world/NPC.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game/world/map_generator.gd" type="Script" id=4]
+[ext_resource path="res://assets/mix__h-elder_man__t-elder_man__b-energetic_ponytail__s-energetic_ponytail_walk_64.png" type="Texture" id=5]
+[ext_resource path="res://assets/mix__h-neutral_hoodie__t-skirt_woman__b-neutral_hoodie__s-neutral_hoodie_walk_64.png" type="Texture" id=6]
+[ext_resource path="res://game/world/Door.tscn" type="PackedScene" id=7]
+[ext_resource path="res://game/world/ObstaclePoly.tscn" type="PackedScene" id=8]
+[ext_resource path="res://game/world/WeatherAltar.tscn" type="PackedScene" id=9]
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 200, 20 )
+
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 20, 200 )
+
+[node name="World" type="Node2D"]
+position = Vector2( 0, -6 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="BackgroundMap" type="Sprite" parent="."]
+position = Vector2( -238, 3 )
+texture = ExtResource( 1 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionMap" type="TileMap" parent="."]
+modulate = Color( 1, 1, 1, 0.5 )
+cell_size = Vector2( 32, 32 )
+format = 1
+script = ExtResource( 4 )
+
+[node name="Doors" type="Node2D" parent="."]
+
+[node name="CafeDoor" parent="Doors" instance=ExtResource( 7 )]
+position = Vector2( 3200, 2000 )
+target_position = Vector2( 10000, 10000 )
+
+[node name="Interiors" type="Node2D" parent="."]
+position = Vector2( 10000, 10000 )
+
+[node name="CafeInterior" type="Node2D" parent="Interiors"]
+
+[node name="Floor" type="ColorRect" parent="Interiors/CafeInterior"]
+margin_left = -200.0
+margin_top = -200.0
+margin_right = 200.0
+margin_bottom = 200.0
+color = Color( 0.4, 0.2, 0.1, 1 )
+
+[node name="Walls" type="StaticBody2D" parent="Interiors/CafeInterior"]
+
+[node name="Top" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
+position = Vector2( 0, -200 )
+shape = SubResource( 8 )
+
+[node name="Bottom" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
+position = Vector2( 0, 200 )
+shape = SubResource( 8 )
+
+[node name="Left" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
+position = Vector2( -200, 0 )
+shape = SubResource( 9 )
+
+[node name="Right" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
+position = Vector2( 200, 0 )
+shape = SubResource( 9 )
+
+[node name="ExitDoor" parent="Interiors/CafeInterior" instance=ExtResource( 7 )]
+position = Vector2( 0, 150 )
+target_position = Vector2( 3200, 2050 )
+prompt_text = "[E] Đi ra ngoài"
+
+[node name="YSort" type="YSort" parent="."]
+
+[node name="Player" parent="YSort" instance=ExtResource( 2 )]
+position = Vector2( 3000, 2000 )
+
+[node name="Mayor" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 2950, 2050 )
+npc_sprite = ExtResource( 5 )
+
+[node name="Girl" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3050, 2050 )
+npc_sprite = ExtResource( 6 )
+npc_name = "Cô Gái"
+npc_personality = "Năng động, thích khám phá và yêu thiên nhiên."
+
+[node name="ObstaclePoly" parent="." instance=ExtResource( 8 )]
+position = Vector2( 1245, 1487 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly"]
+position = Vector2( -10, 5 )
+polygon = PoolVector2Array( -79, -100, 427, -90, 436, 363, 237, 366, 239, 226, 106, 226, 110, 368, -79, 368 )
+
+[node name="Door" parent="ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 168, 267 )
+target_position = Vector2( 5224, -218 )
+
+[node name="WeatherAltar" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 9 )]
+position = Vector2( 1403, 260 )
+
+[node name="Position2D" type="Position2D" parent="."]
+position = Vector2( 3846, 1857 )
+
+[node name="ObstaclePoly3" parent="." instance=ExtResource( 8 )]
+position = Vector2( 1100, 2255 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3"]
+polygon = PoolVector2Array( -374, -217, 397, -224, 409, 250, 21, 234, 27, 103, -86, 103, -77, 245, -390, 222 )
+
+[node name="ObstaclePoly2" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 950, -573 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly2"]
+polygon = PoolVector2Array( -107, 190, -252, 195, -257, -192, 9, -195, 14, -57, 305, -58, 316, 194, 16, 188, 16, 48, -105, 46 )
+
+[node name="ObstaclePoly4" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 835, 13 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly4"]
+polygon = PoolVector2Array( -289, -242, 477, -240, 466, 220, -3, 246, -3, 65, -144, 67, -146, 244, -291, 242 )
+
+[node name="ObstaclePoly5" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 1883, 328 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly5"]
+polygon = PoolVector2Array( -275, -51, -180, -118, -40, -147, 120, -137, 236, -112, 316, -53, 324, 32, 271, 120, 143, 176, -52, 183, -227, 135, -315, 8 )
+
+[node name="ObstaclePoly6" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 2915, 208 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly6"]
+polygon = PoolVector2Array( -257, -211, 300, -203, 282, 271, 45, 273, 47, 118, -79, 113, -79, 271, -282, 274 )
+
+[node name="ObstaclePoly7" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 2772, -403 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly7"]
+polygon = PoolVector2Array( -309, -232, 177, -230, 180, -122, 260, -124, 258, 289, 59, 280, 57, 169, -132, 169, -130, 276, -246, 278, -248, 171, -172, 173, -177, -91, -320, -91 )
+
+[node name="ObstaclePoly" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 3427, -494 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly"]
+polygon = PoolVector2Array( -338, -170, 265, -172, 286, 353, 50, 351, 42, 140, -82, 136, -70, 351, -299, 350 )
+
+[node name="ObstaclePoly3" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 1809, -1379 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly3"]
+polygon = PoolVector2Array( -650, -122, 593, -130, 622, 152, 544, 355, 265, 352, 253, 230, 141, 236, 141, 301, 74, 303, 64, 152, -78, 153, -78, 303, -147, 298, -148, 235, -256, 235, -266, 360, -524, 354, -519, 405, -99, 433, -99, 675, -445, 678, -844, 449, -851, 166, -671, 144 )
+
+[node name="ObstaclePoly8" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 2896, -1337 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly8"]
+polygon = PoolVector2Array( -370, -164, -440, 345, -512, 388, -1012, 400, -1001, 603, -342, 602, -288, 535, -55, 538, -61, 150, 81, 152, 96, 525, 600, 509, 729, 326, 686, 113, 222, -183 )
+
+[node name="ObstaclePoly9" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 3628, 148 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly9"]
+polygon = PoolVector2Array( -265, -167, -259, -4, -329, 5, -331, 327, -4, 325, -10, 167, 87, 155, 96, 331, 324, 331, 301, -83, 238, -77, 231, -183 )
+
+[node name="ObstaclePoly10" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 3103, 788 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly10"]
+polygon = PoolVector2Array( -423, -156, -375, 348, -103, 350, -109, 110, 9, 108, 23, 346, 584, 333, 649, 196, 687, -158 )
+
+[node name="ObstaclePoly11" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 2315, 1058 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly11"]
+polygon = PoolVector2Array( -239, -286, -329, -144, -339, 428, 2997, 438, 3004, 269, 1917, 231, 1643, -175, 1554, -127, 1531, 214, 365, 218, 372, 292, -54, 281, -43, 87, 44, 87, 47, 159, 245, 153, 223, -183, -54, -306 )
+
+[node name="ObstaclePoly12" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 989, 550 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly12"]
+polygon = PoolVector2Array( -240, -159, 254, -159, 339, -27, 333, 286, 31, 266, 31, 121, -69, 121, -74, 186, -74, 186, -231, 178 )
+
+[node name="ObstaclePoly13" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 935, 1026 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly13"]
+polygon = PoolVector2Array( -263, -166, 336, -113, 346, 264, 22, 264, 15, 96, -99, 96, -92, 361, 892, 376, 887, 463, -2252, 473, -2246, -1277, -1527, -1280, -1537, -873, -1748, -690, -1775, -127, -1280, 69, -707, 29 )
+
+[node name="ObstaclePoly14" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 1559, 984 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly14"]
+polygon = PoolVector2Array( -144, -131, -180, 171, -66, 181, -74, 118, 29, 118, 33, 312, 409, 310, 416, 257, 263, 257, 275, -131 )
+
+[node name="ObstaclePoly15" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 371, 523 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly15"]
+polygon = PoolVector2Array( -361, -134, 242, -115, 223, 306, 59, 300, 46, 144, -52, 150, -178, 220, -405, 71, -530, 221, -627, 223, -775, 384, -829, 339, -716, 191, -1005, 186, -962, 108, -663, 97 )
+
+[node name="ObstaclePoly16" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( -779, -537 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly16"]
+polygon = PoolVector2Array( -90, 260, -92, 206, -65, 103, 3, 102, 9, 163, 675, 199, 661, -53, -38, -67, -20, -175, 226, -161, 239, -337, 334, -344, 352, -155, 715, -148, 709, -434, 1560, -439, 1557, -753, 1458, -746, 1469, -938, 1564, -943, 1587, -819, 1799, -817, 1802, -1111, 1999, -1079, 1996, -1210, 2100, -1210, 2105, -1086, 2625, -1057, 2616, -1152, 2716, -1149, 2723, -1054, 3424, -1068, 3431, -1188, 3503, -1188, 3521, -1084, 3881, -1075, 4431, -812, 4770, -1150, 5209, -1304, 5968, -678, 6040, 261, 6093, 269, 6109, -1489, -515, -1580, -515, 226, -112, 218, -88, 202 )
+
+[node name="ObstaclePoly17" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 4010, -859 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly17"]
+polygon = PoolVector2Array( 123, -719, -80, -613, -227, -397, -234, 51, -68, 331, -100, 705, 122, 841, 65, 1451, -32, 1608, 300, 1625, 300, 1542, 489, 1544, 504, 1504, 641, 1502, 639, 1447, 782, 1441, 801, 1565, 860, 1561, 953, 1462, 934, 1355, 881, 1336, 883, 1178, 1060, 1249, 1063, 1646, 986, 1723, 990, 1937, 918, 1942, 897, 1899, 651, 1910, 660, 1691, 454, 1707, 456, 1974, 341, 1969, 336, 1766, -37, 1745, 273, 2128, 1094, 2137, 1298, 1297, 1263, 882, 850, 817, 538, 794, 202, 536, 260, 478, 623, 519, 1002, 770, 1002, 817, 1280, 841, 1310, 616, 867, 292, 741, 55, 470, -108, 402, -57, 470, 34, 257, -54, 219, -250, 351, -339, 589, -396, 785, -335, 904, -132, 867, -20, 904, 68, 965, -115, 857, -403, 660, -552, 463, -657 )
+
+[node name="ObstaclePoly18" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 1615, -539 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly18"]
+polygon = PoolVector2Array( -57, -45, -57, 87, 37, 86, 43, 2, 185, 6, 178, -68 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="ObstaclePoly19" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 1635, -146 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly19"]
+polygon = PoolVector2Array( -87, -126, -10, -130, -3, -52, 127, -43, 127, 44, -63, 38 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="ObstaclePoly20" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 2209, -161 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly20"]
+polygon = PoolVector2Array( -39, -107, -45, -35, -172, -34, -172, 66, 38, 56, 45, -104 )
+
+[node name="ObstaclePoly21" parent="ObstaclePoly3" instance=ExtResource( 8 )]
+position = Vector2( 2202, -514 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly21"]
+polygon = PoolVector2Array( -164, -88, -164, -29, -38, -24, -32, 65, 49, 68, 45, -78 )
+__meta__ = {
+"_edit_lock_": true
+}

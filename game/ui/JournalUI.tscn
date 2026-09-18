@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://game/ui/journal_ui.gd" type="Script" id=1]
+
+[node name="JournalUI" type="CanvasLayer"]
+layer = 5
+script = ExtResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -300.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+
+[node name="Title" type="Label" parent="Panel"]
+anchor_right = 1.0
+margin_top = 10.0
+margin_bottom = 30.0
+text = "NHẬT KÝ THỊ TRẤN"
+align = 1
+valign = 1
+
+[node name="LogLabel" type="RichTextLabel" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 40.0
+margin_right = -10.0
+margin_bottom = -10.0
+bbcode_enabled = true
+scroll_following = true
