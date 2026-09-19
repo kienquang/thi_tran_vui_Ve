@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/waiting_bench_right.png-0f51481bc85e4c4c20d19ae97d8bdafe.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://assets/rooms/clinic/assets/furniture/waiting_bench/frames/waiting_bench_right.png"
+dest_files=[ "res://.import/waiting_bench_right.png-0f51481bc85e4c4c20d19ae97d8bdafe.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+process/normal_map_invert_y=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

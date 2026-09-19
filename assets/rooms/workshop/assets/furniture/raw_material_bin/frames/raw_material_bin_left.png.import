@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/raw_material_bin_left.png-1cd1cada2ea26053c1e945bd088470ca.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://assets/rooms/workshop/assets/furniture/raw_material_bin/frames/raw_material_bin_left.png"
+dest_files=[ "res://.import/raw_material_bin_left.png-1cd1cada2ea26053c1e945bd088470ca.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+process/normal_map_invert_y=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://assets/town.png" type="Texture" id=1]
 [ext_resource path="res://game/world/Player.tscn" type="PackedScene" id=2]
@@ -9,6 +9,24 @@
 [ext_resource path="res://game/world/Door.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/world/ObstaclePoly.tscn" type="PackedScene" id=8]
 [ext_resource path="res://game/world/WeatherAltar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://game/world/rooms/Dining Hall.tscn" type="PackedScene" id=10]
+[ext_resource path="res://game/world/rooms/Cafe.tscn" type="PackedScene" id=11]
+[ext_resource path="res://game/world/rooms/Workshop.tscn" type="PackedScene" id=12]
+[ext_resource path="res://game/world/rooms/Town Hall.tscn" type="PackedScene" id=13]
+[ext_resource path="res://game/world/rooms/Dock Warehouse.tscn" type="PackedScene" id=14]
+[ext_resource path="res://game/world/rooms/Market Shop.tscn" type="PackedScene" id=15]
+[ext_resource path="res://game/world/rooms/Home Template A.tscn" type="PackedScene" id=16]
+[ext_resource path="res://game/world/rooms/Home Template B.tscn" type="PackedScene" id=17]
+[ext_resource path="res://game/world/rooms/Library.tscn" type="PackedScene" id=18]
+[ext_resource path="res://game/world/rooms/Clinic.tscn" type="PackedScene" id=19]
+[ext_resource path="res://game/world/room_generator.gd" type="Script" id=99]
+[ext_resource path="res://assets/npc/mix__h-skirt_woman__t-elder_man__b-energetic_ponytail__s-energetic_ponytail_walk_64.png" type="Texture" id=101]
+[ext_resource path="res://assets/npc/mix__h-street_creator__t-elder_man__b-energetic_ponytail__s-suit_man_walk_64.png" type="Texture" id=102]
+[ext_resource path="res://assets/npc/mix__h-suit_man__t-energetic_ponytail__b-skirt_woman__s-street_creator_walk_64.png" type="Texture" id=103]
+[ext_resource path="res://assets/npc/neutral_hoodie_walk_64.png" type="Texture" id=104]
+[ext_resource path="res://assets/npc/skirt_woman_walk_64.png" type="Texture" id=105]
+[ext_resource path="res://assets/npc/street_creator_walk_64.png" type="Texture" id=106]
+[ext_resource path="res://assets/npc/suit_man_walk_64.png" type="Texture" id=107]
 
 [sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 200, 20 )
@@ -46,6 +64,36 @@ script = ExtResource( 4 )
 [node name="CafeDoor" parent="Doors" instance=ExtResource( 7 )]
 position = Vector2( 3200, 2000 )
 target_position = Vector2( 10000, 10000 )
+
+[node name="Cafe" parent="." instance=ExtResource( 11 )]
+position = Vector2( 6860, 16 )
+
+[node name="Dining Hall" parent="Cafe" instance=ExtResource( 10 )]
+position = Vector2( 48, 3200 )
+
+[node name="Clinic" parent="Cafe/Dining Hall" instance=ExtResource( 19 )]
+position = Vector2( -32, -1663 )
+
+[node name="Dock Warehouse" parent="Cafe/Dining Hall" instance=ExtResource( 14 )]
+position = Vector2( 1707, -3216 )
+
+[node name="Home Template A" parent="Cafe/Dining Hall" instance=ExtResource( 16 )]
+position = Vector2( 1647, -1645 )
+
+[node name="Home Template B" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 17 )]
+position = Vector2( 12, 1740 )
+
+[node name="Library" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 18 )]
+position = Vector2( 1792, -1555 )
+
+[node name="Market Shop" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 15 )]
+position = Vector2( 1858, 52 )
+
+[node name="Town Hall" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 13 )]
+position = Vector2( 1982, 1829 )
+
+[node name="Workshop" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 12 )]
+position = Vector2( 111, 3632 )
 
 [node name="Interiors" type="Node2D" parent="."]
 position = Vector2( 10000, 10000 )
@@ -97,6 +145,41 @@ npc_sprite = ExtResource( 6 )
 npc_name = "Cô Gái"
 npc_personality = "Năng động, thích khám phá và yêu thiên nhiên."
 
+[node name="NPC1" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3100, 2050 )
+npc_sprite = ExtResource( 101 )
+npc_name = "Cư dân 1"
+
+[node name="NPC2" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3150, 2050 )
+npc_sprite = ExtResource( 102 )
+npc_name = "Cư dân 2"
+
+[node name="NPC3" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3200, 2050 )
+npc_sprite = ExtResource( 103 )
+npc_name = "Cư dân 3"
+
+[node name="NPC4" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3250, 2050 )
+npc_sprite = ExtResource( 104 )
+npc_name = "Cư dân 4"
+
+[node name="NPC5" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3249, 1934 )
+npc_sprite = ExtResource( 105 )
+npc_name = "Cư dân 5"
+
+[node name="NPC6" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3352, 1963 )
+npc_sprite = ExtResource( 106 )
+npc_name = "Cư dân 6"
+
+[node name="NPC7" parent="YSort" instance=ExtResource( 3 )]
+position = Vector2( 3400, 2050 )
+npc_sprite = ExtResource( 107 )
+npc_name = "Cư dân 7"
+
 [node name="ObstaclePoly" parent="." instance=ExtResource( 8 )]
 position = Vector2( 1245, 1487 )
 __meta__ = {
@@ -113,6 +196,63 @@ target_position = Vector2( 5224, -218 )
 
 [node name="WeatherAltar" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 9 )]
 position = Vector2( 1403, 260 )
+
+[node name="Door" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 596, 14 )
+target_position = Vector2( 9223, 4147 )
+
+[node name="Door2" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 461, 617 )
+target_position = Vector2( 9189, 2498 )
+
+[node name="Door3" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 1510, -700 )
+target_position = Vector2( 11133, 4245 )
+
+[node name="Door4" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 442, -944 )
+target_position = Vector2( 10997, 923 )
+
+[node name="Door5" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( -332, 634 )
+target_position = Vector2( 9218, 6136 )
+
+[node name="Door6" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 63, 1212 )
+
+[node name="Door7" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 657, 1202 )
+target_position = Vector2( 9134, 876 )
+
+[node name="Door8" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 592, 1654 )
+
+[node name="Door9" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 1238, 1646 )
+
+[node name="Door10" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 2007, 1685 )
+
+[node name="Door11" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 2746, 1448 )
+
+[node name="Door12" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 4408, 1113 )
+
+[node name="Door13" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 3361, 844 )
+
+[node name="Door14" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 3115, 188 )
+target_position = Vector2( 7319, 885 )
+
+[node name="Door15" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 2424, 299 )
+target_position = Vector2( 11036, 2583 )
+
+[node name="Door16" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
+position = Vector2( 2252, 127 )
+target_position = Vector2( 11036, 2583 )
 
 [node name="Position2D" type="Position2D" parent="."]
 position = Vector2( 3846, 1857 )
@@ -302,6 +442,9 @@ position = Vector2( 2209, -161 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly20"]
 polygon = PoolVector2Array( -39, -107, -45, -35, -172, -34, -172, 66, 38, 56, 45, -104 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="ObstaclePoly21" parent="ObstaclePoly3" instance=ExtResource( 8 )]
 position = Vector2( 2202, -514 )
@@ -311,3 +454,104 @@ polygon = PoolVector2Array( -164, -88, -164, -29, -38, -24, -32, 65, 49, 68, 45,
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="RoomGenerator" type="Node" parent="."]
+script = ExtResource( 99 )
+
+[node name="Door" parent="." instance=ExtResource( 7 )]
+position = Vector2( 3999, 1118 )
+target_position = Vector2( 7504, 2469 )
+
+[node name="ObstaclePoly2" parent="." instance=ExtResource( 8 )]
+position = Vector2( 6971, 175 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly2"]
+polygon = PoolVector2Array( -114, -130, -98, 943, 240, 926, 240, 806, -31, 806, -23, 240, 168, 243, 173, 72, 780, 48, 789, 216, 1132, 228, 1146, 633, 799, 633, 806, 689, 571, 674, 571, 796, 425, 799, 430, 919, 1276, 933, 1262, -139 )
+
+[node name="Door" parent="ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 339, 861 )
+
+[node name="ObstaclePoly" parent="ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 8 )]
+position = Vector2( 1722, 230 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly2/CollisionPolygon2D2/ObstaclePoly"]
+polygon = PoolVector2Array( -84, -378, -63, 696, 351, 688, 341, 483, 13, 495, 48, -216, 805, -196, 805, -48, 1110, -48, 1128, 480, 851, 495, 843, 170, 767, 165, 760, 28, 711, 28, 719, 231, 793, 231, 795, 493, 554, 478, 556, 25, 526, 25, 528, 665, 1232, 660, 1237, -378 )
+
+[node name="Door" parent="ObstaclePoly2/CollisionPolygon2D2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 445, 640 )
+
+[node name="ObstaclePoly4" parent="." instance=ExtResource( 8 )]
+position = Vector2( 10397, 596 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4"]
+polygon = PoolVector2Array( -43, -567, -33, 576, 534, 586, 531, 464, 407, 464, 409, 381, 54, 383, 66, -191, 440, -171, 440, -366, 826, -353, 818, -176, 1184, -186, 1181, 373, 823, 368, 823, 439, 661, 457, 681, 574, 1260, 579, 1253, -562 )
+
+[node name="Door" parent="ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 602, 502 )
+
+[node name="ObstaclePoly" parent="ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 8 )]
+position = Vector2( -3332, 1186 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/CollisionPolygon2D2/ObstaclePoly"]
+polygon = PoolVector2Array( -187, -218, -170, 997, 369, 994, 346, 775, 135, 780, 141, 549, 104, 549, 104, 712, -113, 720, -93, 293, 295, 321, 312, 284, 187, 281, 195, 45, 617, 36, 583, 316, 760, 375, 971, 313, 982, 735, 751, 555, 745, 777, 517, 792, 523, 940, 1039, 926, 1039, -212 )
+
+[node name="Door" parent="ObstaclePoly4/CollisionPolygon2D2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 446, 843 )
+
+[node name="ObstaclePoly" parent="ObstaclePoly4" instance=ExtResource( 8 )]
+position = Vector2( -1684, 1150 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly"]
+polygon = PoolVector2Array( -156, -148, -140, 995, 407, 998, 401, 818, 197, 815, 194, 565, -91, 541, -80, 333, 264, 314, 275, 487, 296, 487, 312, 105, 692, 97, 700, 495, 721, 500, 732, 320, 972, 314, 985, 535, 775, 535, 775, 863, 568, 845, 590, 990, 1128, 995, 1128, -167 )
+
+[node name="Door" parent="ObstaclePoly4/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 491, 910 )
+
+[node name="ObstaclePoly2" parent="ObstaclePoly4" instance=ExtResource( 8 )]
+position = Vector2( 127, 1637 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly2"]
+polygon = PoolVector2Array( -86, -563, -91, 594, 407, 584, 388, 401, -32, 414, -37, 161, 194, 148, 202, -46, -48, -30, -37, -294, 285, -296, 267, -482, 388, -466, 417, -275, 616, -267, 627, -450, 775, -471, 807, -264, 985, -288, 985, -425, 1085, -455, 1068, -38, 864, -19, 837, 161, 1101, 134, 1071, 436, 627, 444, 649, 562, 1120, 554, 1133, -584 )
+
+[node name="Door" parent="ObstaclePoly4/ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 515, 530 )
+
+[node name="ObstaclePoly3" parent="ObstaclePoly4" instance=ExtResource( 8 )]
+position = Vector2( -3427, 2923 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly3"]
+polygon = PoolVector2Array( -51, -276, -57, 827, 342, 824, 331, 690, 60, 690, 68, 83, 225, 63, 248, 231, 431, 237, 433, 191, 274, 186, 288, -2, 787, -5, 778, 149, 599, 177, 599, 229, 770, 234, 781, 488, 830, 494, 818, 97, 1075, 100, 1089, 648, 570, 679, 573, 822, 1180, 793, 1149, -268 )
+
+[node name="Door" parent="ObstaclePoly4/ObstaclePoly3/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 462, 753 )
+
+[node name="ObstaclePoly5" parent="ObstaclePoly4" instance=ExtResource( 8 )]
+position = Vector2( -1617, 3679 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly5"]
+polygon = PoolVector2Array( -211, -938, -182, 148, 365, 103, 337, -168, 208, -174, 208, -436, 177, -456, 166, -305, -94, -311, -88, -639, 163, -633, 166, -570, 220, -579, 214, -667, 676, -676, 676, -567, 716, -550, 716, -647, 987, -650, 998, -465, 685, -465, 682, -371, 998, -362, 978, -211, 513, -197, 513, 117, 1084, 120, 1072, -935 )
+
+[node name="Door" parent="ObstaclePoly4/ObstaclePoly5/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 445, 43 )
+
+[node name="ObstaclePoly6" parent="ObstaclePoly4" instance=ExtResource( 8 )]
+position = Vector2( 318, 2928 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly6"]
+polygon = PoolVector2Array( -166, -109, -151, 1027, 359, 981, 344, 794, 196, 815, 196, 749, -112, 731, -91, 374, 254, 353, 248, 214, 674, 232, 692, 356, 1003, 362, 1000, 749, 501, 740, 519, 963, 1045, 960, 1048, -91 )
+
+[node name="Door" parent="ObstaclePoly4/ObstaclePoly6/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 426, 876 )
+
+[node name="ObstaclePoly4" parent="ObstaclePoly4" instance=ExtResource( 8 )]
+position = Vector2( -1666, 5585 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly4"]
+polygon = PoolVector2Array( -58, -965, -48, 190, 432, 165, 434, 43, 343, 43, 343, -33, 76, -36, 84, -706, 775, -714, 803, -445, 841, -452, 848, -569, 848, -572, 1052, -569, 1067, -38, 884, -59, 856, -236, 790, -226, 787, -66, 615, -33, 615, 15, 544, 15, 554, 167, 1146, 178, 1161, -937 )
+
+[node name="Door" parent="ObstaclePoly4/ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 495, 99 )
+
+[node name="Door2" parent="." instance=ExtResource( 7 )]
+position = Vector2( 4002, 2630 )
+target_position = Vector2( 7422, 4131 )

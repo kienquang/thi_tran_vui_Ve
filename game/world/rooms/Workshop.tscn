@@ -1,0 +1,71 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://assets/rooms/workshop/assets/background/room_shell.png" type="Texture" id=1]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/assembly_trestle_bench_r2/frames/assembly_trestle_bench_r2_down.png" type="Texture" id=2]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/heavy_workbench_r2/frames/heavy_workbench_r2_down.png" type="Texture" id=3]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/raw_lumber_rack_r2/frames/raw_lumber_rack_r2_down.png" type="Texture" id=4]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/bench_grinder_stand/frames/bench_grinder_stand_down.png" type="Texture" id=5]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/finished_goods_shelf_r2/frames/finished_goods_shelf_r2_down.png" type="Texture" id=6]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/repair_intake_cart/frames/repair_intake_cart_down.png" type="Texture" id=7]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/raw_material_bin/frames/raw_material_bin_down.png" type="Texture" id=8]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/repair_handoff_counter/frames/repair_handoff_counter_down.png" type="Texture" id=9]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/small_finished_goods_rack/frames/small_finished_goods_rack_down.png" type="Texture" id=10]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/small_parts_cabinet/frames/small_parts_cabinet_down.png" type="Texture" id=11]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/standing_tool_board/frames/standing_tool_board_down.png" type="Texture" id=12]
+[ext_resource path="res://assets/rooms/workshop/assets/furniture/workshop_tool_chest/frames/workshop_tool_chest_down.png" type="Texture" id=13]
+
+[node name="Workshop" type="Node2D"]
+
+[node name="Background" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="YSort" type="YSort" parent="."]
+
+[node name="assembly_trestle_bench_r2" type="Sprite" parent="YSort"]
+position = Vector2( 100, 100 )
+texture = ExtResource( 2 )
+
+[node name="bench_grinder_stand" type="Sprite" parent="YSort"]
+position = Vector2( 180, 100 )
+texture = ExtResource( 5 )
+
+[node name="finished_goods_shelf_r2" type="Sprite" parent="YSort"]
+position = Vector2( 260, 100 )
+texture = ExtResource( 6 )
+
+[node name="heavy_workbench_r2" type="Sprite" parent="YSort"]
+position = Vector2( 340, 100 )
+texture = ExtResource( 3 )
+
+[node name="raw_lumber_rack_r2" type="Sprite" parent="YSort"]
+position = Vector2( 420, 100 )
+texture = ExtResource( 4 )
+
+[node name="raw_material_bin" type="Sprite" parent="YSort"]
+position = Vector2( 500, 100 )
+texture = ExtResource( 8 )
+
+[node name="repair_handoff_counter" type="Sprite" parent="YSort"]
+position = Vector2( 580, 100 )
+texture = ExtResource( 9 )
+
+[node name="repair_intake_cart" type="Sprite" parent="YSort"]
+position = Vector2( 660, 100 )
+texture = ExtResource( 7 )
+
+[node name="small_finished_goods_rack" type="Sprite" parent="YSort"]
+position = Vector2( 740, 100 )
+texture = ExtResource( 10 )
+
+[node name="small_parts_cabinet" type="Sprite" parent="YSort"]
+position = Vector2( 100, 180 )
+texture = ExtResource( 11 )
+
+[node name="standing_tool_board" type="Sprite" parent="YSort"]
+position = Vector2( 180, 180 )
+texture = ExtResource( 12 )
+
+[node name="workshop_tool_chest" type="Sprite" parent="YSort"]
+position = Vector2( 260, 180 )
+texture = ExtResource( 13 )

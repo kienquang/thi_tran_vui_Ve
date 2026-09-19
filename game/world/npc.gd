@@ -22,6 +22,10 @@ var current_state = State.IDLE
 export var move_speed = 80.0
 var target_position = Vector2.ZERO
 var base_wander_position = Vector2.ZERO
+
+var final_destination = Vector2.ZERO
+var entrance_door_pos = Vector2.ZERO
+
 var velocity = Vector2.ZERO
 
 onready var sprite = $Sprite
@@ -91,16 +95,68 @@ func update_schedule(hour, force_update = false):
 			loc_name = "mayor_house" # Đi ngủ
 			
 	var map = get_node_or_null("/root/World/CollisionMap")
-	if map != null and map.has_method("get_location"):
-		var loc = map.get_location(loc_name)
-		if loc != Vector2.ZERO:
-			base_wander_position = loc
-			target_position = base_wander_position
+	if map != null and map.has_method("get_location_data"):
+		var loc_data = map.get_location_data(loc_name)
+		if loc_data != null:
+			if typeof(loc_data) == TYPE_DICTIONARY:
+				final_destination = loc_data["final_pos"]
+				entrance_door_pos = loc_data["door_pos"]
+			else:
+				final_destination = loc_data
+				entrance_door_pos = Vector2.ZERO
+				
+			base_wander_position = final_destination
+			reevaluate_path()
 			current_state = State.WALKING
 			if TimeManager.is_raining:
 				add_personal_log("Trời đang mưa, tôi cần chạy vội đi trú ở " + loc_name + ".")
 			else:
 				add_personal_log("Tôi cần đi đến " + loc_name + " lúc " + str(hour) + " giờ.")
+
+func reevaluate_path():
+	var am_i_inside = global_position.x > 5000
+	var is_dest_inside = final_destination.x > 5000
+	
+	if am_i_inside and not is_dest_inside:
+		# Đang ở trong nhà, muốn ra ngoài -> Tìm cái cửa Exit gần nhất!
+		var nearest_exit = get_nearest_exit_door()
+		if nearest_exit != Vector2.ZERO:
+			target_position = nearest_exit
+			base_wander_position = nearest_exit
+		else:
+			# Không tìm thấy cửa, đành đi thẳng (lỗi thiết kế map)
+			target_position = final_destination
+			base_wander_position = final_destination
+			
+	elif not am_i_inside and is_dest_inside:
+		# Đang ngoài đường, muốn vào nhà -> Tới cửa trước!
+		if entrance_door_pos != Vector2.ZERO:
+			target_position = entrance_door_pos
+			base_wander_position = entrance_door_pos
+		else:
+			target_position = final_destination
+			base_wander_position = final_destination
+			
+	else:
+		# Cùng 1 không gian, cứ đi thẳng
+		target_position = final_destination
+		base_wander_position = final_destination
+
+func get_nearest_exit_door() -> Vector2:
+	var doors = get_tree().get_nodes_in_group("doors")
+	var nearest_pos = Vector2.ZERO
+	var min_dist = 999999.0
+	for d in doors:
+		if d.global_position.x > 5000: # Chỉ tìm cửa ở trong nhà
+			var dist = global_position.distance_to(d.global_position)
+			if dist < min_dist:
+				min_dist = dist
+				nearest_pos = d.global_position
+	return nearest_pos
+
+func on_teleported():
+	# NPC vừa đi qua cửa thành công, cần tính toán chặng tiếp theo
+	reevaluate_path()
 
 func _on_time_changed(hour, _minute):
 	# Kiểm tra lịch trình mỗi giờ

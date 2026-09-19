@@ -14,6 +14,7 @@ var is_panning = false
 var camera_mode = "FOLLOW" # Hoặc "FREE"
 onready var reset_cam_btn = $UICanvas/ResetCamBtn
 var max_zoom = 5.0
+var desired_zoom = Vector2(1.0, 1.0)
 
 func _ready():
 	# Cho phép Camera bay tự do khỏi Player
@@ -58,16 +59,56 @@ func _physics_process(delta):
 	if camera_mode == "FOLLOW":
 		camera.global_position = camera.global_position.linear_interpolate(global_position, 10.0 * delta)
 		
-		# Xử lý ngoại lệ: Nếu người chơi đi vào Interior (tọa độ > 10000), mở khóa giới hạn Camera
+		# Xử lý ngoại lệ: Nếu người chơi đi vào Interior (tọa độ > 5000), mở khóa giới hạn Camera
 		var bg_map = get_node_or_null("/root/World/BackgroundMap")
-		if bg_map != null and bg_map.texture != null:
-			var tex_size = bg_map.texture.get_size()
-			if global_position.x > tex_size.x or global_position.y > tex_size.y:
+		if global_position.x > 5000 or global_position.y > 5000:
+			# Tìm xem người chơi đang đứng trong phòng nào
+			var interiors = get_node_or_null("/root/World/Interiors")
+			var found_room = false
+			if interiors != null:
+				for room in interiors.get_children():
+					var bg = room.get_node_or_null("Background")
+					if bg != null and bg is Sprite and bg.texture != null:
+						var tex_size = bg.texture.get_size()
+						# Trừ hao hoặc cộng thêm vị trí phòng để ra HCN
+						var rect = Rect2(room.global_position, tex_size)
+						if rect.has_point(global_position):
+							found_room = true
+							camera.limit_left = int(rect.position.x)
+							camera.limit_top = int(rect.position.y)
+							camera.limit_right = int(rect.position.x + rect.size.x)
+							camera.limit_bottom = int(rect.position.y + rect.size.y)
+							
+							# Tự động zoom cho vừa khít phòng (phóng to)
+							var window_size = get_viewport_rect().size
+							var zoom_x = rect.size.x / window_size.x
+							var zoom_y = rect.size.y / window_size.y
+							# Chọn mức zoom nhỏ hơn để ưu tiên lấp đầy màn hình, hoặc lớn hơn để thấy toàn bộ
+							var target_zoom = max(zoom_x, zoom_y)
+							# Zoom tối thiểu là 0.3 để không bị vỡ hạt quá mức
+							target_zoom = max(target_zoom, 0.3)
+							
+							# Chuyển dần zoom cho mượt
+							camera.zoom = camera.zoom.linear_interpolate(Vector2(target_zoom, target_zoom), 5.0 * delta)
+							break
+							
+			if not found_room:
+				# Nếu chưa tìm thấy phòng cụ thể, cứ mở toang limit
+				camera.limit_left = -10000000
+				camera.limit_top = -10000000
 				camera.limit_right = 10000000
 				camera.limit_bottom = 10000000
-			else:
+		else:
+			# Đang ở ngoài đường, khóa theo map chính
+			if bg_map != null and bg_map.texture != null:
+				var tex_size = bg_map.texture.get_size()
+				camera.limit_left = 0
+				camera.limit_top = 0
 				camera.limit_right = int(tex_size.x)
 				camera.limit_bottom = int(tex_size.y)
+			
+			# Từ từ zoom lại mức cuộn chuột mong muốn khi bước ra ngoài
+			camera.zoom = camera.zoom.linear_interpolate(desired_zoom, 5.0 * delta)
 
 # Hàm xử lý thay đổi frame của sprite sheet
 func update_animation(delta):
@@ -92,13 +133,13 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		# Zoom to nhỏ
 		if event.button_index == BUTTON_WHEEL_UP:
-			camera.zoom -= Vector2(0.2, 0.2)
+			desired_zoom -= Vector2(0.2, 0.2)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			camera.zoom += Vector2(0.2, 0.2)
+			desired_zoom += Vector2(0.2, 0.2)
 			
 		# Nới lỏng giới hạn zoom lên mức tối đa vừa khít bản đồ
-		camera.zoom.x = clamp(camera.zoom.x, 0.3, max_zoom)
-		camera.zoom.y = clamp(camera.zoom.y, 0.3, max_zoom)
+		desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+		desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
 		
 		# Nhấn giữ Chuột Phải hoặc Chuột Giữa để di chuyển Camera
 		if event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_MIDDLE:
