@@ -23,49 +23,49 @@ centered = false
 [node name="YSort" type="YSort" parent="."]
 
 [node name="assembly_trestle_bench_r2" type="Sprite" parent="YSort"]
-position = Vector2( 100, 100 )
+position = Vector2( 267, 484 )
 texture = ExtResource( 2 )
 
 [node name="bench_grinder_stand" type="Sprite" parent="YSort"]
-position = Vector2( 180, 100 )
+position = Vector2( 809, 474 )
 texture = ExtResource( 5 )
 
 [node name="finished_goods_shelf_r2" type="Sprite" parent="YSort"]
-position = Vector2( 260, 100 )
+position = Vector2( 1020, 639 )
 texture = ExtResource( 6 )
 
 [node name="heavy_workbench_r2" type="Sprite" parent="YSort"]
-position = Vector2( 340, 100 )
+position = Vector2( 521, 405 )
 texture = ExtResource( 3 )
 
 [node name="raw_lumber_rack_r2" type="Sprite" parent="YSort"]
-position = Vector2( 420, 100 )
+position = Vector2( 264, 851 )
 texture = ExtResource( 4 )
 
 [node name="raw_material_bin" type="Sprite" parent="YSort"]
-position = Vector2( 500, 100 )
+position = Vector2( 945, 454 )
 texture = ExtResource( 8 )
 
 [node name="repair_handoff_counter" type="Sprite" parent="YSort"]
-position = Vector2( 580, 100 )
+position = Vector2( 738, 687 )
 texture = ExtResource( 9 )
 
 [node name="repair_intake_cart" type="Sprite" parent="YSort"]
-position = Vector2( 660, 100 )
+position = Vector2( 971, 879 )
 texture = ExtResource( 7 )
 
 [node name="small_finished_goods_rack" type="Sprite" parent="YSort"]
-position = Vector2( 740, 100 )
+position = Vector2( 250, 657 )
 texture = ExtResource( 10 )
 
 [node name="small_parts_cabinet" type="Sprite" parent="YSort"]
-position = Vector2( 100, 180 )
+position = Vector2( 183, 300 )
 texture = ExtResource( 11 )
 
 [node name="standing_tool_board" type="Sprite" parent="YSort"]
-position = Vector2( 180, 180 )
+position = Vector2( 830, 855 )
 texture = ExtResource( 12 )
 
 [node name="workshop_tool_chest" type="Sprite" parent="YSort"]
-position = Vector2( 260, 180 )
+position = Vector2( 817, 325 )
 texture = ExtResource( 13 )

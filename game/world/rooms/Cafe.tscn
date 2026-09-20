@@ -20,37 +20,49 @@ centered = false
 [node name="YSort" type="YSort" parent="."]
 
 [node name="cafe_service_counter" type="Sprite" parent="YSort"]
-position = Vector2( 100, 100 )
+position = Vector2( 516, 386 )
 texture = ExtResource( 4 )
 
 [node name="espresso_machine" type="Sprite" parent="YSort"]
-position = Vector2( 180, 100 )
+position = Vector2( 167, 430 )
 texture = ExtResource( 1 )
 
 [node name="floor_lamp" type="Sprite" parent="YSort"]
-position = Vector2( 260, 100 )
+position = Vector2( 199, 695 )
 texture = ExtResource( 5 )
 
 [node name="flowering_plant" type="Sprite" parent="YSort"]
-position = Vector2( 340, 100 )
+position = Vector2( 324, 929 )
 texture = ExtResource( 2 )
 
 [node name="leafy_plant" type="Sprite" parent="YSort"]
-position = Vector2( 420, 100 )
+position = Vector2( 580, 922 )
 texture = ExtResource( 6 )
 
 [node name="pastry_display" type="Sprite" parent="YSort"]
-position = Vector2( 500, 100 )
+position = Vector2( 814, 258 )
 texture = ExtResource( 10 )
 
 [node name="round_table_large" type="Sprite" parent="YSort"]
-position = Vector2( 580, 100 )
+position = Vector2( 353, 682 )
 texture = ExtResource( 7 )
 
 [node name="round_table_small" type="Sprite" parent="YSort"]
-position = Vector2( 660, 100 )
+position = Vector2( 1042, 550 )
+texture = ExtResource( 8 )
+
+[node name="round_table_small2" type="Sprite" parent="YSort"]
+position = Vector2( 664, 518 )
+texture = ExtResource( 8 )
+
+[node name="round_table_small3" type="Sprite" parent="YSort"]
+position = Vector2( 528, 513 )
+texture = ExtResource( 8 )
+
+[node name="round_table_small4" type="Sprite" parent="YSort"]
+position = Vector2( 386, 510 )
 texture = ExtResource( 8 )
 
 [node name="wooden_chair" type="Sprite" parent="YSort"]
-position = Vector2( 740, 100 )
+position = Vector2( 346, 626 )
 texture = ExtResource( 9 )

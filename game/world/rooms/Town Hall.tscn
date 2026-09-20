@@ -19,33 +19,33 @@ centered = false
 [node name="YSort" type="YSort" parent="."]
 
 [node name="consultation_table" type="Sprite" parent="YSort"]
-position = Vector2( 100, 100 )
+position = Vector2( 210, 739 )
 texture = ExtResource( 9 )
 
 [node name="counter" type="Sprite" parent="YSort"]
-position = Vector2( 180, 100 )
+position = Vector2( 633, 509 )
 texture = ExtResource( 3 )
 
 [node name="document_cabinet" type="Sprite" parent="YSort"]
-position = Vector2( 260, 100 )
+position = Vector2( 138, 484 )
 texture = ExtResource( 5 )
 
 [node name="floor_lamp" type="Sprite" parent="YSort"]
-position = Vector2( 340, 100 )
+position = Vector2( 903, 496 )
 texture = ExtResource( 7 )
 
 [node name="form_stand" type="Sprite" parent="YSort"]
-position = Vector2( 420, 100 )
+position = Vector2( 425, 831 )
 texture = ExtResource( 6 )
 
 [node name="leafy_plant" type="Sprite" parent="YSort"]
-position = Vector2( 500, 100 )
+position = Vector2( 749, 853 )
 texture = ExtResource( 4 )
 
 [node name="upholstered_chair" type="Sprite" parent="YSort"]
-position = Vector2( 580, 100 )
+position = Vector2( 451, 438 )
 texture = ExtResource( 8 )
 
 [node name="waiting_bench" type="Sprite" parent="YSort"]
-position = Vector2( 660, 100 )
+position = Vector2( 961, 715 )
 texture = ExtResource( 1 )

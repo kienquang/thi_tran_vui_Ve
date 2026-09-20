@@ -470,6 +470,7 @@ polygon = PoolVector2Array( -114, -130, -98, 943, 240, 926, 240, 806, -31, 806, 
 
 [node name="Door" parent="ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 339, 861 )
+target_position = Vector2( 4518, 2114 )
 
 [node name="ObstaclePoly" parent="ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 8 )]
 position = Vector2( 1722, 230 )
@@ -479,6 +480,7 @@ polygon = PoolVector2Array( -84, -378, -63, 696, 351, 688, 341, 483, 13, 495, 48
 
 [node name="Door" parent="ObstaclePoly2/CollisionPolygon2D2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 445, 640 )
+target_position = Vector2( 2067, 3067 )
 
 [node name="ObstaclePoly4" parent="." instance=ExtResource( 8 )]
 position = Vector2( 10397, 596 )
@@ -487,7 +489,8 @@ position = Vector2( 10397, 596 )
 polygon = PoolVector2Array( -43, -567, -33, 576, 534, 586, 531, 464, 407, 464, 409, 381, 54, 383, 66, -191, 440, -171, 440, -366, 826, -353, 818, -176, 1184, -186, 1181, 373, 823, 368, 823, 439, 661, 457, 681, 574, 1260, 579, 1253, -562 )
 
 [node name="Door" parent="ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 7 )]
-position = Vector2( 602, 502 )
+position = Vector2( 602, 547 )
+target_position = Vector2( 2063, 3102 )
 
 [node name="ObstaclePoly" parent="ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 8 )]
 position = Vector2( -3332, 1186 )
@@ -497,6 +500,7 @@ polygon = PoolVector2Array( -187, -218, -170, 997, 369, 994, 346, 775, 135, 780,
 
 [node name="Door" parent="ObstaclePoly4/CollisionPolygon2D2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 446, 843 )
+target_position = Vector2( 4025, 1282 )
 
 [node name="ObstaclePoly" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( -1684, 1150 )
@@ -506,6 +510,7 @@ polygon = PoolVector2Array( -156, -148, -140, 995, 407, 998, 401, 818, 197, 815,
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 491, 910 )
+target_position = Vector2( 1862, 2497 )
 
 [node name="ObstaclePoly2" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( 127, 1637 )
@@ -515,15 +520,17 @@ polygon = PoolVector2Array( -86, -563, -91, 594, 407, 584, 388, 401, -32, 414, -
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 515, 530 )
+target_position = Vector2( 3534, 1886 )
 
 [node name="ObstaclePoly3" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( -3427, 2923 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly3"]
-polygon = PoolVector2Array( -51, -276, -57, 827, 342, 824, 331, 690, 60, 690, 68, 83, 225, 63, 248, 231, 431, 237, 433, 191, 274, 186, 288, -2, 787, -5, 778, 149, 599, 177, 599, 229, 770, 234, 781, 488, 830, 494, 818, 97, 1075, 100, 1089, 648, 570, 679, 573, 822, 1180, 793, 1149, -268 )
+polygon = PoolVector2Array( -51, -276, -57, 827, 342, 824, 331, 690, 60, 690, 68, 83, 225, 63, 248, 231, 431, 237, 433, 191, 274, 186, 288, -2, 787, -5, 778, 149, 599, 177, 599, 229, 770, 234, 775.389, 358.448, 781, 488, 830, 494, 818, 97, 1075, 100, 1089, 648, 570, 679, 573, 822, 1180, 793, 1149, -268 )
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly3/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 462, 753 )
+target_position = Vector2( 1996, 1919 )
 
 [node name="ObstaclePoly5" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( -1617, 3679 )
@@ -533,6 +540,7 @@ polygon = PoolVector2Array( -211, -938, -182, 148, 365, 103, 337, -168, 208, -17
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly5/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 445, 43 )
+target_position = Vector2( 1067, 2535 )
 
 [node name="ObstaclePoly6" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( 318, 2928 )
@@ -542,6 +550,7 @@ polygon = PoolVector2Array( -166, -109, -151, 1027, 359, 981, 344, 794, 196, 815
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly6/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 426, 876 )
+target_position = Vector2( 2902, 1232 )
 
 [node name="ObstaclePoly4" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( -1666, 5585 )
@@ -551,6 +560,7 @@ polygon = PoolVector2Array( -58, -965, -48, 190, 432, 165, 434, 43, 343, 43, 343
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 495, 99 )
+target_position = Vector2( 1072, 2565 )
 
 [node name="Door2" parent="." instance=ExtResource( 7 )]
 position = Vector2( 4002, 2630 )

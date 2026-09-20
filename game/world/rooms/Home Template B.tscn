@@ -17,45 +17,48 @@
 [node name="Background" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="YSort" type="YSort" parent="."]
 
 [node name="bedside_cabinet" type="Sprite" parent="YSort"]
-position = Vector2( 100, 100 )
+position = Vector2( 483, 359 )
 texture = ExtResource( 8 )
 
 [node name="floor_lamp" type="Sprite" parent="YSort"]
-position = Vector2( 180, 100 )
+position = Vector2( 329, 322 )
 texture = ExtResource( 2 )
 
 [node name="leafy_plant" type="Sprite" parent="YSort"]
-position = Vector2( 260, 100 )
+position = Vector2( 803, 758 )
 texture = ExtResource( 10 )
 
 [node name="lidded_storage_chest" type="Sprite" parent="YSort"]
-position = Vector2( 340, 100 )
+position = Vector2( 1114, 383 )
 texture = ExtResource( 11 )
 
 [node name="low_shelf" type="Sprite" parent="YSort"]
-position = Vector2( 420, 100 )
+position = Vector2( 1042, 659 )
 texture = ExtResource( 7 )
 
 [node name="narrow_worktable" type="Sprite" parent="YSort"]
-position = Vector2( 500, 100 )
+position = Vector2( 500, 679 )
 texture = ExtResource( 6 )
 
 [node name="round_table_small" type="Sprite" parent="YSort"]
-position = Vector2( 580, 100 )
+position = Vector2( 761, 507 )
 texture = ExtResource( 4 )
 
 [node name="single_bed" type="Sprite" parent="YSort"]
-position = Vector2( 660, 100 )
+position = Vector2( 167, 512 )
 texture = ExtResource( 9 )
 
 [node name="tall_storage_cabinet" type="Sprite" parent="YSort"]
-position = Vector2( 740, 100 )
+position = Vector2( 998, 338 )
 texture = ExtResource( 3 )
 
 [node name="wooden_chair" type="Sprite" parent="YSort"]
-position = Vector2( 100, 180 )
+position = Vector2( 749, 461 )
 texture = ExtResource( 5 )

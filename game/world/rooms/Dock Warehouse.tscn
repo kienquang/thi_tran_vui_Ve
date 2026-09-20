@@ -17,25 +17,29 @@ centered = false
 [node name="YSort" type="YSort" parent="."]
 
 [node name="empty_heavy_storage_rack" type="Sprite" parent="YSort"]
-position = Vector2( 100, 100 )
+position = Vector2( 233, 260 )
+texture = ExtResource( 1 )
+
+[node name="empty_heavy_storage_rack2" type="Sprite" parent="YSort"]
+position = Vector2( 231, 393 )
 texture = ExtResource( 1 )
 
 [node name="fishing_net_bundle" type="Sprite" parent="YSort"]
-position = Vector2( 180, 100 )
+position = Vector2( 690, 838 )
 texture = ExtResource( 3 )
 
 [node name="freight_handcart" type="Sprite" parent="YSort"]
-position = Vector2( 260, 100 )
+position = Vector2( 1060, 811 )
 texture = ExtResource( 4 )
 
 [node name="storage_barrel" type="Sprite" parent="YSort"]
-position = Vector2( 340, 100 )
+position = Vector2( 346, 876 )
 texture = ExtResource( 2 )
 
 [node name="warehouse_record_desk" type="Sprite" parent="YSort"]
-position = Vector2( 420, 100 )
+position = Vector2( 665, 322 )
 texture = ExtResource( 5 )
 
 [node name="wooden_shipping_crate" type="Sprite" parent="YSort"]
-position = Vector2( 500, 100 )
+position = Vector2( 796, 841 )
 texture = ExtResource( 6 )
