@@ -10,6 +10,16 @@ onready var time_label = $TimeLabel
 var current_npc = null
 
 func _ready():
+	var font = DynamicFont.new()
+	font.font_data = load("res://assets/ARIAL.TTF")
+	font.size = 14
+	
+	line_edit.add_font_override("font", font)
+	send_btn.add_font_override("font", font)
+	close_btn.add_font_override("font", font)
+	chat_history.add_font_override("normal_font", font)
+	time_label.add_font_override("font", font)
+	
 	panel.hide()
 	send_btn.connect("pressed", self, "_on_send_pressed")
 	close_btn.connect("pressed", self, "_on_close_pressed")

@@ -3,6 +3,7 @@ extends Node
 signal log_added(new_log)
 
 var global_logs = []
+var current_world_event = "Bình thường"
 
 func add_entry(event_text: String):
 	# Sử dụng TimeManager để lấy giờ game thay vì giờ thực

@@ -5,6 +5,11 @@ extends PanelContainer
 onready var label = $Label
 
 func _ready():
+	var font = DynamicFont.new()
+	font.font_data = load("res://assets/ARIAL.TTF")
+	font.size = 14
+	label.add_font_override("font", font)
+	
 	# Ẩn bong bóng thoại khi mới khởi tạo
 	hide()
 

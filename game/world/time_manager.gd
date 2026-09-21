@@ -6,8 +6,8 @@ signal time_changed(hour, minute)
 var game_hour: int = 6
 var game_minute: int = 0
 
-# 1 giây ngoài đời = 10 phút trong game
-export var time_scale: float = 10.0 
+# 1 giây ngoài đời = 2 phút trong game (chậm hơn nhiều so với 10 phút trước đây)
+export var time_scale: float = 2.0 
 var timer: float = 0.0
 
 var is_raining = false

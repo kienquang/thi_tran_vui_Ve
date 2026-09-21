@@ -24,6 +24,9 @@ func _ready():
 	reset_cam_btn.hide()
 	reset_cam_btn.connect("pressed", self, "_on_reset_cam_pressed")
 	
+	# Khởi tạo Bảng theo dõi NPC
+	_init_npc_board()
+	
 	# Thiết lập giới hạn màn hình bằng cách đọc kích thước map
 	var bg_map = get_node_or_null("/root/World/BackgroundMap")
 	if bg_map != null and bg_map is Sprite and bg_map.texture != null:
@@ -39,7 +42,153 @@ func _ready():
 		var max_zoom_y = tex_size.y / window_size.y
 		max_zoom = min(max_zoom_x, max_zoom_y)
 
+var npc_board_font: DynamicFont
+
+var is_power_cut = false
+var is_water_cut = false
+var is_rent_high = false
+
+var btn_electric: Button
+var btn_water: Button
+var btn_rent: Button
+
+func _init_npc_board():
+	var ui_canvas = $UICanvas
+	
+	npc_board_font = DynamicFont.new()
+	npc_board_font.font_data = load("res://assets/ARIAL.TTF")
+	npc_board_font.size = 14
+	
+	var btn = Button.new()
+	btn.text = "📍 Xem Lịch Trình NPC"
+	btn.rect_position = Vector2(20, 140)
+	btn.add_font_override("font", npc_board_font)
+	btn.connect("pressed", self, "_on_npc_board_toggle")
+	ui_canvas.add_child(btn)
+	
+	var panel = PanelContainer.new()
+	panel.name = "NPCBoard"
+	panel.rect_position = Vector2(20, 180)
+	panel.rect_size = Vector2(400, 360)
+	panel.hide()
+	ui_canvas.add_child(panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBox"
+	panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "--- HOẠT ĐỘNG CỦA CƯ DÂN ---"
+	title.align = Label.ALIGN_CENTER
+	title.add_font_override("font", npc_board_font)
+	vbox.add_child(title)
+	
+	var event_label = Label.new()
+	event_label.name = "EventLabel"
+	event_label.text = "Sự kiện hiện tại: Bình thường"
+	event_label.modulate = Color(1, 0.8, 0.2)
+	event_label.align = Label.ALIGN_CENTER
+	event_label.add_font_override("font", npc_board_font)
+	vbox.add_child(event_label)
+	
+	var scroll = ScrollContainer.new()
+	scroll.name = "ScrollContainer"
+	scroll.rect_min_size = Vector2(380, 260)
+	vbox.add_child(scroll)
+	
+	var list = VBoxContainer.new()
+	list.name = "List"
+	scroll.add_child(list)
+	
+	# --- Cụm nút tạo sự kiện (God Mode) ---
+	var event_panel = HBoxContainer.new()
+	event_panel.name = "EventControls"
+	event_panel.rect_position = Vector2(440, 180)
+	event_panel.hide()
+	ui_canvas.add_child(event_panel)
+	
+	btn_electric = Button.new()
+	btn_electric.text = "⚡ Cắt Điện"
+	btn_electric.add_font_override("font", npc_board_font)
+	btn_electric.connect("pressed", self, "_toggle_event", ["electric"])
+	event_panel.add_child(btn_electric)
+	
+	btn_water = Button.new()
+	btn_water.text = "💧 Cắt Nước"
+	btn_water.add_font_override("font", npc_board_font)
+	btn_water.connect("pressed", self, "_toggle_event", ["water"])
+	event_panel.add_child(btn_water)
+	
+	btn_rent = Button.new()
+	btn_rent.text = "💰 Tăng Giá Nhà"
+	btn_rent.add_font_override("font", npc_board_font)
+	btn_rent.connect("pressed", self, "_toggle_event", ["rent"])
+	event_panel.add_child(btn_rent)
+
+func _toggle_event(type: String):
+	var desc = ""
+	if type == "electric":
+		is_power_cut = !is_power_cut
+		btn_electric.text = "⚡ Cấp Điện Lại" if is_power_cut else "⚡ Cắt Điện"
+		desc = "Toàn thị trấn vừa bị cúp điện đột ngột do bão." if is_power_cut else "Điện đã được khôi phục, đèn sáng trở lại."
+	elif type == "water":
+		is_water_cut = !is_water_cut
+		btn_water.text = "💧 Cấp Nước Lại" if is_water_cut else "💧 Cắt Nước"
+		desc = "Đường ống nước bị vỡ, toàn thị trấn mất nước." if is_water_cut else "Đường ống nước đã sửa xong, có nước lại."
+	elif type == "rent":
+		is_rent_high = !is_rent_high
+		btn_rent.text = "💰 Giảm Giá Nhà" if is_rent_high else "💰 Tăng Giá Nhà"
+		desc = "Thị trưởng tuyên bố tăng giá thuê nhà gấp đôi." if is_rent_high else "Thị trưởng đã giảm giá nhà về mức bình thường."
+		
+	WorldLog.current_world_event = desc
+	WorldLog.add_entry("THÔNG BÁO KHẨN: " + desc)
+	
+	var npcs = get_tree().get_nodes_in_group("npcs")
+	for n in npcs:
+		if n.has_method("_on_world_event_received"):
+			n._on_world_event_received(desc)
+	update_npc_board()
+
+func _on_npc_board_toggle():
+	var board = $UICanvas/NPCBoard
+	var controls = $UICanvas/EventControls
+	board.visible = !board.visible
+	controls.visible = board.visible
+	if board.visible:
+		update_npc_board()
+
+func update_npc_board():
+	var event_lbl = $UICanvas/NPCBoard/VBox/EventLabel
+	if event_lbl:
+		event_lbl.text = "Sự kiện hiện tại: " + WorldLog.current_world_event
+		
+	var list = $UICanvas/NPCBoard/VBox/ScrollContainer/List
+	for c in list.get_children():
+		c.queue_free()
+		
+	var npcs = get_tree().get_nodes_in_group("npcs")
+	for n in npcs:
+		var lbl = Label.new()
+		lbl.add_font_override("font", npc_board_font)
+		lbl.rect_min_size = Vector2(360, 0)
+		
+		var action = "Đang rảnh rỗi"
+		if n.npc_memory["history_logs"].size() > 0:
+			action = n.npc_memory["history_logs"].back()
+		lbl.text = "👤 " + n.npc_name + ":\n   └ " + action
+		lbl.autowrap = true
+		list.add_child(lbl)
+		
+		var space = Control.new()
+		space.rect_min_size = Vector2(0, 10)
+		list.add_child(space)
+
 func _physics_process(delta):
+	if Engine.get_frames_drawn() % 60 == 0:
+		var board = $UICanvas.get_node_or_null("NPCBoard")
+		if board and board.visible:
+			update_npc_board()
+			
 	# ... Logic di chuyển cũ giữ nguyên
 	if ChatUI.panel.visible:
 		velocity = Vector2.ZERO
@@ -55,60 +204,58 @@ func _physics_process(delta):
 		
 		update_animation(delta)
 		
-	# Logic bám đuổi của Camera
-	if camera_mode == "FOLLOW":
-		camera.global_position = camera.global_position.linear_interpolate(global_position, 10.0 * delta)
-		
-		# Xử lý ngoại lệ: Nếu người chơi đi vào Interior (tọa độ > 5000), mở khóa giới hạn Camera
-		var bg_map = get_node_or_null("/root/World/BackgroundMap")
-		if global_position.x > 5000 or global_position.y > 5000:
-			# Tìm xem người chơi đang đứng trong phòng nào
-			var interiors = get_node_or_null("/root/World/Interiors")
-			var found_room = false
-			if interiors != null:
-				for room in interiors.get_children():
-					var bg = room.get_node_or_null("Background")
-					if bg != null and bg is Sprite and bg.texture != null:
-						var tex_size = bg.texture.get_size()
-						# Trừ hao hoặc cộng thêm vị trí phòng để ra HCN
-						var rect = Rect2(room.global_position, tex_size)
-						if rect.has_point(global_position):
-							found_room = true
+	# Tính toán mục tiêu zoom
+	var target_zoom_vec = desired_zoom
+	
+	if global_position.x > 5000 or global_position.y > 5000:
+		var interiors = get_node_or_null("/root/World/Interiors")
+		var found_room = false
+		if interiors != null:
+			for room in interiors.get_children():
+				var bg = room.get_node_or_null("Background")
+				if bg != null and bg is Sprite and bg.texture != null:
+					var tex_size = bg.texture.get_size()
+					var rect = Rect2(room.global_position, tex_size)
+					if rect.has_point(global_position):
+						found_room = true
+						if camera_mode == "FOLLOW":
 							camera.limit_left = int(rect.position.x)
 							camera.limit_top = int(rect.position.y)
 							camera.limit_right = int(rect.position.x + rect.size.x)
 							camera.limit_bottom = int(rect.position.y + rect.size.y)
+						
+						var window_size = get_viewport_rect().size
+						var zoom_x = rect.size.x / window_size.x
+						var zoom_y = rect.size.y / window_size.y
+						var tz = max(zoom_x, zoom_y)
+						tz = max(tz, 0.3)
+						
+						# Chỉ ép zoom nếu đang Follow
+						if camera_mode == "FOLLOW":
+							target_zoom_vec = Vector2(tz, tz)
 							
-							# Tự động zoom cho vừa khít phòng (phóng to)
-							var window_size = get_viewport_rect().size
-							var zoom_x = rect.size.x / window_size.x
-							var zoom_y = rect.size.y / window_size.y
-							# Chọn mức zoom nhỏ hơn để ưu tiên lấp đầy màn hình, hoặc lớn hơn để thấy toàn bộ
-							var target_zoom = max(zoom_x, zoom_y)
-							# Zoom tối thiểu là 0.3 để không bị vỡ hạt quá mức
-							target_zoom = max(target_zoom, 0.3)
-							
-							# Chuyển dần zoom cho mượt
-							camera.zoom = camera.zoom.linear_interpolate(Vector2(target_zoom, target_zoom), 5.0 * delta)
-							break
-							
-			if not found_room:
-				# Nếu chưa tìm thấy phòng cụ thể, cứ mở toang limit
-				camera.limit_left = -10000000
-				camera.limit_top = -10000000
-				camera.limit_right = 10000000
-				camera.limit_bottom = 10000000
-		else:
-			# Đang ở ngoài đường, khóa theo map chính
-			if bg_map != null and bg_map.texture != null:
-				var tex_size = bg_map.texture.get_size()
-				camera.limit_left = 0
-				camera.limit_top = 0
-				camera.limit_right = int(tex_size.x)
-				camera.limit_bottom = int(tex_size.y)
+						break
+						
+		if not found_room and camera_mode == "FOLLOW":
+			camera.limit_left = -10000000
+			camera.limit_top = -10000000
+			camera.limit_right = 10000000
+			camera.limit_bottom = 10000000
+	else:
+		var bg_map = get_node_or_null("/root/World/BackgroundMap")
+		if bg_map != null and bg_map.texture != null and camera_mode == "FOLLOW":
+			var tex_size = bg_map.texture.get_size()
+			camera.limit_left = 0
+			camera.limit_top = 0
+			camera.limit_right = int(tex_size.x)
+			camera.limit_bottom = int(tex_size.y)
 			
-			# Từ từ zoom lại mức cuộn chuột mong muốn khi bước ra ngoài
-			camera.zoom = camera.zoom.linear_interpolate(desired_zoom, 5.0 * delta)
+	# Luôn luôn áp dụng mượt zoom dù ở chế độ nào
+	camera.zoom = camera.zoom.linear_interpolate(target_zoom_vec, 5.0 * delta)
+	
+	# Xử lý nội suy di chuyển Camera
+	if camera_mode == "FOLLOW":
+		camera.global_position = camera.global_position.linear_interpolate(global_position, 10.0 * delta)
 
 # Hàm xử lý thay đổi frame của sprite sheet
 func update_animation(delta):

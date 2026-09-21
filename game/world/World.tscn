@@ -136,42 +136,42 @@ prompt_text = "[E] Đi ra ngoài"
 position = Vector2( 3000, 2000 )
 
 [node name="Mayor" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 2950, 2050 )
+position = Vector2( 2709, 2186 )
 npc_sprite = ExtResource( 5 )
 
 [node name="Girl" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3050, 2050 )
+position = Vector2( 2919, 2196 )
 npc_sprite = ExtResource( 6 )
 npc_name = "Cô Gái"
 npc_personality = "Năng động, thích khám phá và yêu thiên nhiên."
 
 [node name="NPC1" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3100, 2050 )
+position = Vector2( 3381, 1795 )
 npc_sprite = ExtResource( 101 )
 npc_name = "Cư dân 1"
 
 [node name="NPC2" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3150, 2050 )
+position = Vector2( 3293, 2198 )
 npc_sprite = ExtResource( 102 )
 npc_name = "Cư dân 2"
 
 [node name="NPC3" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3200, 2050 )
+position = Vector2( 3094, 2211 )
 npc_sprite = ExtResource( 103 )
 npc_name = "Cư dân 3"
 
 [node name="NPC4" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3250, 2050 )
+position = Vector2( 2619, 1814 )
 npc_sprite = ExtResource( 104 )
 npc_name = "Cư dân 4"
 
 [node name="NPC5" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3249, 1934 )
+position = Vector2( 2982, 1608 )
 npc_sprite = ExtResource( 105 )
 npc_name = "Cư dân 5"
 
 [node name="NPC6" parent="YSort" instance=ExtResource( 3 )]
-position = Vector2( 3352, 1963 )
+position = Vector2( 3099, 1629 )
 npc_sprite = ExtResource( 106 )
 npc_name = "Cư dân 6"
 
@@ -192,7 +192,6 @@ polygon = PoolVector2Array( -79, -100, 427, -90, 436, 363, 237, 366, 239, 226, 1
 
 [node name="Door" parent="ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 168, 267 )
-target_position = Vector2( 5224, -218 )
 
 [node name="WeatherAltar" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 9 )]
 position = Vector2( 1403, 260 )
@@ -418,42 +417,6 @@ __meta__ = {
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly17"]
 polygon = PoolVector2Array( 123, -719, -80, -613, -227, -397, -234, 51, -68, 331, -100, 705, 122, 841, 65, 1451, -32, 1608, 300, 1625, 300, 1542, 489, 1544, 504, 1504, 641, 1502, 639, 1447, 782, 1441, 801, 1565, 860, 1561, 953, 1462, 934, 1355, 881, 1336, 883, 1178, 1060, 1249, 1063, 1646, 986, 1723, 990, 1937, 918, 1942, 897, 1899, 651, 1910, 660, 1691, 454, 1707, 456, 1974, 341, 1969, 336, 1766, -37, 1745, 273, 2128, 1094, 2137, 1298, 1297, 1263, 882, 850, 817, 538, 794, 202, 536, 260, 478, 623, 519, 1002, 770, 1002, 817, 1280, 841, 1310, 616, 867, 292, 741, 55, 470, -108, 402, -57, 470, 34, 257, -54, 219, -250, 351, -339, 589, -396, 785, -335, 904, -132, 867, -20, 904, 68, 965, -115, 857, -403, 660, -552, 463, -657 )
-
-[node name="ObstaclePoly18" parent="ObstaclePoly3" instance=ExtResource( 8 )]
-position = Vector2( 1615, -539 )
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly18"]
-polygon = PoolVector2Array( -57, -45, -57, 87, 37, 86, 43, 2, 185, 6, 178, -68 )
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="ObstaclePoly19" parent="ObstaclePoly3" instance=ExtResource( 8 )]
-position = Vector2( 1635, -146 )
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly19"]
-polygon = PoolVector2Array( -87, -126, -10, -130, -3, -52, 127, -43, 127, 44, -63, 38 )
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="ObstaclePoly20" parent="ObstaclePoly3" instance=ExtResource( 8 )]
-position = Vector2( 2209, -161 )
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly20"]
-polygon = PoolVector2Array( -39, -107, -45, -35, -172, -34, -172, 66, 38, 56, 45, -104 )
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="ObstaclePoly21" parent="ObstaclePoly3" instance=ExtResource( 8 )]
-position = Vector2( 2202, -514 )
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly21"]
-polygon = PoolVector2Array( -164, -88, -164, -29, -38, -24, -32, 65, 49, 68, 45, -78 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="RoomGenerator" type="Node" parent="."]
 script = ExtResource( 99 )

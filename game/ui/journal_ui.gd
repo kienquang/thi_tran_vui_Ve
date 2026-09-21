@@ -4,6 +4,13 @@ onready var panel = $Panel
 onready var log_label = $Panel/LogLabel
 
 func _ready():
+	var font = DynamicFont.new()
+	font.font_data = load("res://assets/ARIAL.TTF")
+	font.size = 14
+	
+	$Panel/Title.add_font_override("font", font)
+	log_label.add_font_override("normal_font", font)
+	
 	panel.hide()
 	WorldLog.connect("log_added", self, "_on_log_added")
 	update_log_display()
