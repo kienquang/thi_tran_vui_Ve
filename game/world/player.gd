@@ -23,6 +23,7 @@ func _ready():
 	
 	# Khởi tạo Bảng theo dõi NPC trước để có sẵn font
 	_init_npc_board()
+	_init_god_mode_ui()
 	
 	reset_cam_btn.hide()
 	reset_cam_btn.connect("pressed", self, "_on_reset_cam_pressed")
@@ -128,10 +129,34 @@ func _init_npc_board():
 	list.size_flags_horizontal = 3
 	scroll.add_child(list)
 	
-	# --- Cụm nút tạo sự kiện (God Mode) ---
-	var event_panel = HBoxContainer.new()
+func _init_god_mode_ui():
+	var ui_canvas = $UICanvas
+	
+	# Dropdown chọn thời tiết
+	var weather_opt = OptionButton.new()
+	weather_opt.name = "WeatherOption"
+	weather_opt.rect_position = Vector2(800, 20)
+	weather_opt.add_font_override("font", npc_board_font)
+	weather_opt.add_item("☀️ Nắng ráo", 0)
+	weather_opt.add_item("🌧️ Mưa rào", 1)
+	weather_opt.add_item("⛈️ Bão tố", 2)
+	weather_opt.add_item("❄️ Tuyết rơi", 3)
+	weather_opt.add_item("🌫️ Sương mù", 4)
+	weather_opt.connect("item_selected", self, "_on_weather_selected")
+	ui_canvas.add_child(weather_opt)
+
+	# Nút bật/tắt bảng sự kiện
+	var event_toggle_btn = Button.new()
+	event_toggle_btn.text = "🌍 Sự Kiện Thị Trấn"
+	event_toggle_btn.rect_position = Vector2(800, 60)
+	event_toggle_btn.add_font_override("font", npc_board_font)
+	event_toggle_btn.connect("pressed", self, "_on_event_panel_toggle")
+	ui_canvas.add_child(event_toggle_btn)
+	
+	# Bảng Sự Kiện
+	var event_panel = VBoxContainer.new()
 	event_panel.name = "EventControls"
-	event_panel.rect_position = Vector2(440, 180)
+	event_panel.rect_position = Vector2(800, 100)
 	event_panel.hide()
 	ui_canvas.add_child(event_panel)
 	
@@ -152,6 +177,15 @@ func _init_npc_board():
 	btn_rent.add_font_override("font", npc_board_font)
 	btn_rent.connect("pressed", self, "_toggle_event", ["rent"])
 	event_panel.add_child(btn_rent)
+
+func _on_weather_selected(idx: int):
+	var weather_states = ["SUNNY", "RAIN", "STORM", "SNOW", "FOG"]
+	TimeManager.change_weather(weather_states[idx])
+
+func _on_event_panel_toggle():
+	var controls = $UICanvas/EventControls
+	if controls:
+		controls.visible = !controls.visible
 
 func _toggle_event(type: String):
 	var desc = ""

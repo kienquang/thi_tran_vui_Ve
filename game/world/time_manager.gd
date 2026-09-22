@@ -10,16 +10,14 @@ var game_minute: int = 0
 export var time_scale: float = 2.0 
 var timer: float = 0.0
 
+var current_weather = "SUNNY"
 var is_raining = false
-signal weather_changed(is_raining)
+signal weather_changed(weather_type)
 
-func toggle_rain():
-	is_raining = not is_raining
-	emit_signal("weather_changed", is_raining)
-	if is_raining:
-		WorldLog.add_entry("Trời bỗng nhiên đổ mưa to!")
-	else:
-		WorldLog.add_entry("Trời đã tạnh mưa, nắng lên rực rỡ.")
+func change_weather(type: String):
+	current_weather = type
+	is_raining = (type == "RAIN" or type == "STORM")
+	emit_signal("weather_changed", type)
 
 func _ready():
 	# Tự động đăng ký phím E làm nút tương tác nếu trong Project Settings chưa có
@@ -56,6 +54,16 @@ func update_lighting(delta):
 			target_color = Color(0.8, 0.5, 0.3) # Hoàng hôn (Cam)
 		elif game_hour >= 19 or game_hour < 6:
 			target_color = Color(0.2, 0.2, 0.4) # Đêm (Xanh thẫm)
+			
+		# Pha màu tùy theo thời tiết
+		if current_weather == "RAIN":
+			target_color = target_color.linear_interpolate(Color(0.5, 0.6, 0.7), 0.5)
+		elif current_weather == "STORM":
+			target_color = target_color.linear_interpolate(Color(0.2, 0.2, 0.3), 0.8)
+		elif current_weather == "SNOW":
+			target_color = target_color.linear_interpolate(Color(0.8, 0.9, 1.0), 0.3)
+		elif current_weather == "FOG":
+			target_color = target_color.linear_interpolate(Color(0.7, 0.7, 0.7), 0.6)
 			
 		# Chuyển màu mượt mà
 		canvas_mod.color = canvas_mod.color.linear_interpolate(target_color, delta * 0.5)

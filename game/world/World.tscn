@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://assets/town.png" type="Texture" id=1]
 [ext_resource path="res://game/world/Player.tscn" type="PackedScene" id=2]
@@ -8,7 +8,6 @@
 [ext_resource path="res://assets/mix__h-neutral_hoodie__t-skirt_woman__b-neutral_hoodie__s-neutral_hoodie_walk_64.png" type="Texture" id=6]
 [ext_resource path="res://game/world/Door.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/world/ObstaclePoly.tscn" type="PackedScene" id=8]
-[ext_resource path="res://game/world/WeatherAltar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://game/world/rooms/Dining Hall.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/world/rooms/Cafe.tscn" type="PackedScene" id=11]
 [ext_resource path="res://game/world/rooms/Workshop.tscn" type="PackedScene" id=12]
@@ -212,9 +211,6 @@ polygon = PoolVector2Array( -79, -100, 427, -90, 436, 363, 237, 366, 239, 226, 1
 
 [node name="Door" parent="ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 168, 267 )
-
-[node name="WeatherAltar" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 9 )]
-position = Vector2( 1403, 260 )
 
 [node name="Door" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 596, 14 )

@@ -151,9 +151,15 @@ func update_schedule(hour, force_update = false):
 	current_schedule_hour = hour
 	var loc_name = ""
 	
-	if TimeManager.is_raining:
-		loc_name = "cafe_entrance"
-		move_speed = 150.0 
+	if TimeManager.current_weather == "RAIN" or TimeManager.current_weather == "STORM":
+		loc_name = "cafe"
+		move_speed = 150.0 if TimeManager.current_weather == "RAIN" else 180.0
+	elif TimeManager.current_weather == "SNOW":
+		loc_name = "dining_hall"
+		move_speed = 60.0
+	elif TimeManager.current_weather == "FOG":
+		loc_name = "library"
+		move_speed = 70.0
 	else:
 		move_speed = 80.0
 		var target_hour = -1
@@ -189,8 +195,15 @@ func update_schedule(hour, force_update = false):
 			base_wander_position = final_destination
 			reevaluate_path()
 			current_state = State.WALKING
-			if TimeManager.is_raining:
-				add_personal_log("Trời đang mưa, tôi cần chạy vội đi trú ở " + loc_name + ".")
+			var w = TimeManager.current_weather
+			if w == "RAIN":
+				add_personal_log("Trời đang mưa rào, tôi phải chạy vội đi trú ở " + loc_name + ".")
+			elif w == "STORM":
+				add_personal_log("Bão lớn quá! Tôi đang cố chạy tới " + loc_name + " để lánh nạn!")
+			elif w == "SNOW":
+				add_personal_log("Tuyết rơi lạnh buốt, tôi đang rảo bước từ từ tới " + loc_name + " sưởi ấm.")
+			elif w == "FOG":
+				add_personal_log("Sương mù mịt mù, khó thấy đường quá, tôi đang mò mẫm đi tới " + loc_name + ".")
 			else:
 				add_personal_log("Tôi cần đi đến " + loc_name + " lúc " + str(hour) + " giờ.")
 
@@ -296,7 +309,7 @@ func on_teleported():
 func _on_time_changed(hour, _minute):
 	update_schedule(hour, false)
 
-func _on_weather_changed(_is_raining):
+func _on_weather_changed(_weather_type):
 	update_schedule(TimeManager.game_hour, true)
 
 func _process(delta):
@@ -590,10 +603,12 @@ func add_personal_log(event_text: String):
 
 func generate_system_prompt() -> String:
 	var prompt = "Bạn là nhân vật trong game tên là " + npc_memory["name"] + ". Thời gian: " + TimeManager.get_time_string() + "\n"
-	if TimeManager.is_raining:
-		prompt += "Thời tiết: Đang mưa rất to.\n"
-	else:
-		prompt += "Thời tiết: Nắng ráo đẹp trời.\n"
+	var w = TimeManager.current_weather
+	if w == "RAIN": prompt += "Thời tiết: Đang mưa rào.\n"
+	elif w == "STORM": prompt += "Thời tiết: Đang có bão lớn, sấm chớp.\n"
+	elif w == "SNOW": prompt += "Thời tiết: Đang có tuyết rơi lạnh lẽo.\n"
+	elif w == "FOG": prompt += "Thời tiết: Sương mù dày đặc khó nhìn.\n"
+	else: prompt += "Thời tiết: Nắng ráo đẹp trời.\n"
 		
 	prompt += "Tính cách: " + npc_memory["personality"] + ".\n"
 	prompt += "Tin tức thị trấn:\n" + WorldLog.get_recent_logs(3)
