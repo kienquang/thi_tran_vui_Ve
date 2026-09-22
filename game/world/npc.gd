@@ -55,39 +55,41 @@ func _ready():
 	# Cấu hình Lịch trình và Tính cách chi tiết cho 9 nhân vật
 
 	if npc_name == "Thị Trưởng":
+		npc_name = "Thị trưởng Thomas"
 		npc_personality = "Thị trưởng của thị trấn. Luôn tự hào về công trình công cộng, thích đi kiểm tra."
-		schedule = { 6: "mayor_house", 8: "town_hall", 12: "dining_hall", 14: "park_center", 18: "mayor_house" }
+		schedule = { 6: "home_b", 8: "town_hall", 12: "dining_hall", 14: "park_center", 18: "home_b" }
 	elif npc_name == "Cô Gái":
-		npc_personality = "Một cô gái trẻ mơ mộng, yêu đọc sách và thích ngắm cảnh ở bến tàu."
+		npc_name = "Alice"
+		npc_personality = "Một cô gái trẻ mơ mộng, yêu đọc sách và thích ngắm cảnh ở bến tàu. Vợ của Bác sĩ John."
 		schedule = { 6: "home_a", 9: "library", 13: "cafe_entrance", 16: "dock", 20: "home_a" }
 	elif npc_name == "Cư dân 1":
-		npc_name = "Bác Sĩ John"
-		npc_personality = "Bác sĩ tận tâm của trạm xá, luôn lo lắng cho sức khỏe mọi người."
-		schedule = { 6: "clinic", 12: "cafe_entrance", 14: "clinic", 21: "mayor_house" }
+		npc_name = "Bác sĩ John"
+		npc_personality = "Bác sĩ tận tâm của trạm xá, luôn lo lắng cho sức khỏe mọi người. Chồng của Alice."
+		schedule = { 6: "home_a", 8: "clinic", 12: "cafe_entrance", 14: "clinic", 19: "home_a" }
 	elif npc_name == "Cư dân 2":
 		npc_name = "Thợ mộc Bob"
-		npc_personality = "Thợ mộc yêu nghề, cả ngày cặm cụi ở xưởng, nói chuyện rất hào sảng."
-		schedule = { 6: "workshop", 12: "dining_hall", 13: "workshop", 19: "dock", 22: "workshop" }
+		npc_personality = "Thợ mộc yêu nghề, cả ngày cặm cụi ở xưởng. Chồng của Thủ thư Mary."
+		schedule = { 6: "home_c", 8: "workshop", 12: "dining_hall", 13: "workshop", 19: "home_c" }
 	elif npc_name == "Cư dân 3":
 		npc_name = "Thủ thư Mary"
-		npc_personality = "Người quản lý thư viện trầm tính, rất thích những cuốn sách cổ."
-		schedule = { 7: "home_a", 8: "library", 17: "park_center", 19: "home_a" }
+		npc_personality = "Người quản lý thư viện trầm tính, rất thích những cuốn sách cổ. Vợ của Thợ mộc Bob."
+		schedule = { 6: "home_c", 8: "library", 17: "park_center", 19: "home_c" }
 	elif npc_name == "Cư dân 4":
 		npc_name = "Tiểu thương Anna"
-		npc_personality = "Chủ tiệm tạp hóa ở khu chợ, lanh lẹ và luôn chào mời khách mua hàng."
-		schedule = { 6: "market", 13: "cafe_entrance", 15: "market", 20: "home_a" }
+		npc_personality = "Chủ tiệm tạp hóa ở khu chợ, lanh lẹ và luôn chào mời khách mua hàng. Sống độc thân."
+		schedule = { 6: "home_d", 8: "market", 13: "cafe_entrance", 15: "market", 20: "home_d" }
 	elif npc_name == "Cư dân 5":
 		npc_name = "Thủy thủ Jack"
-		npc_personality = "Thủy thủ già thích biển cả, thường xuyên loanh quanh ở bến tàu."
-		schedule = { 6: "dock", 11: "dining_hall", 14: "dock", 18: "cafe_entrance", 22: "dock" }
+		npc_personality = "Thủy thủ già thích biển cả, thường xuyên loanh quanh ở bến tàu. Ở nhà trọ bến tàu."
+		schedule = { 6: "home_f", 8: "dock", 11: "dining_hall", 14: "dock", 18: "cafe_entrance", 22: "home_f" }
 	elif npc_name == "Cư dân 6":
-		npc_name = "Nhân viên Cafe"
-		npc_personality = "Nhân viên pha chế vui tính, đam mê cà phê và bánh ngọt."
-		schedule = { 6: "cafe_entrance", 15: "park_center", 17: "cafe_entrance", 22: "home_a" }
+		npc_name = "Pha chế David"
+		npc_personality = "Nhân viên pha chế vui tính, đam mê cà phê và bánh ngọt. Chồng của Sarah."
+		schedule = { 6: "home_e", 8: "cafe_entrance", 15: "park_center", 17: "cafe_entrance", 22: "home_e" }
 	elif npc_name == "Cư dân 7":
-		npc_name = "Kiến trúc sư"
-		npc_personality = "Đang thiết kế lại thị trấn, thường đi khảo sát tòa thị chính và bãi đất trống."
-		schedule = { 8: "town_hall", 12: "market", 15: "park_center", 18: "town_hall", 21: "home_a" }
+		npc_name = "Kiến trúc sư Sarah"
+		npc_personality = "Đang thiết kế lại thị trấn, thường đi khảo sát tòa thị chính. Vợ của David."
+		schedule = { 6: "home_e", 8: "town_hall", 12: "market", 15: "park_center", 18: "town_hall", 21: "home_e" }
 
 	npc_memory["name"] = npc_name
 	npc_memory["personality"] = npc_personality
@@ -209,7 +211,22 @@ func reevaluate_path():
 			target_position = final_destination
 			base_wander_position = final_destination
 			
+	elif am_i_inside and is_dest_inside:
+		# Đang ở trong phòng, đích cũng ở trong phòng, nhưng liệu có phải CÙNG 1 phòng không?
+		if not is_same_room(global_position, final_destination):
+			var nearest_exit = get_nearest_exit_door()
+			if nearest_exit != Vector2.ZERO:
+				target_position = nearest_exit
+				base_wander_position = nearest_exit
+			else:
+				target_position = final_destination
+				base_wander_position = final_destination
+		else:
+			target_position = final_destination
+			base_wander_position = final_destination
+			
 	else:
+		# Đang ở ngoài đường, đích cũng ở ngoài đường
 		target_position = final_destination
 		base_wander_position = final_destination
 		
@@ -217,15 +234,57 @@ func reevaluate_path():
 
 func get_nearest_exit_door() -> Vector2:
 	var doors = get_tree().get_nodes_in_group("doors")
+	
+	var bgs = []
+	var player = get_tree().root.get_node_or_null("World/YSort/Player")
+	if player != null and "interior_backgrounds" in player:
+		bgs = player.interior_backgrounds
+			
+	# Tìm phòng mà NPC đang đứng
+	var current_room_rect = Rect2()
+	var found_room = false
+	for bg in bgs:
+		if is_instance_valid(bg) and bg.texture != null:
+			var rect = Rect2(bg.global_position, bg.texture.get_size())
+			if rect.has_point(global_position):
+				current_room_rect = rect
+				found_room = true
+				break
+				
 	var nearest_pos = Vector2.ZERO
 	var min_dist = 999999.0
+	
 	for d in doors:
 		if d.global_position.x > 5000:
+			# Ưu tiên cửa nằm cùng phòng với NPC
+			if found_room and not current_room_rect.has_point(d.global_position):
+				continue
+				
 			var dist = global_position.distance_to(d.global_position)
 			if dist < min_dist:
 				min_dist = dist
 				nearest_pos = d.global_position
+				
+	# Fallback an toàn nếu lỗi bounding box
+	if nearest_pos == Vector2.ZERO:
+		for d in doors:
+			if d.global_position.x > 5000:
+				var dist = global_position.distance_to(d.global_position)
+				if dist < min_dist:
+					min_dist = dist
+					nearest_pos = d.global_position
+					
 	return nearest_pos
+
+func is_same_room(pos1: Vector2, pos2: Vector2) -> bool:
+	var player = get_tree().root.get_node_or_null("World/YSort/Player")
+	if player != null and "interior_backgrounds" in player:
+		for bg in player.interior_backgrounds:
+			if is_instance_valid(bg) and bg.texture != null:
+				var rect = Rect2(bg.global_position, bg.texture.get_size())
+				if rect.has_point(pos1) and rect.has_point(pos2):
+					return true
+	return false
 
 func on_teleported():
 	reevaluate_path()
@@ -287,6 +346,9 @@ func request_path(target: Vector2):
 			current_path = Array(p)
 			if current_path.size() > 1 and global_position.distance_to(current_path[0]) < 10:
 				current_path.pop_front()
+			# Luôn ghim mục tiêu cuối cùng là đích đến chính xác để NPC bước hẳn vào Area2D của cửa
+			if current_path.size() == 0 or current_path.back().distance_to(target) > 5.0:
+				current_path.append(target)
 		else:
 			current_path = [target]
 	else:
@@ -382,9 +444,18 @@ func _on_world_event_received(event_desc: String):
 
 func _on_llm_response(action: String, text_output: String):
 	if action == "chat":
-		speech_bubble.show_text(text_output)
-		add_personal_log("Tôi đã trả lời Player: " + text_output)
-		ChatUI.add_npc_reply(text_output)
+		var final_text = text_output
+		if final_text.begins_with("[SOLVED]") or final_text.find("[SOLVED]") != -1:
+			final_text = final_text.replace("[SOLVED]", "").strip_edges()
+			add_personal_log("Player đã tuyệt vời giúp tôi giải quyết rắc rối cá nhân, tôi rất vui và biết ơn.")
+			WorldLog.add_entry(npc_name + " đã hết buồn bã nhờ sự giúp đỡ của Player.")
+			# Giải thoát khỏi trạng thái khóc lóc
+			if current_state == State.CRYING:
+				current_state = State.WAITING_FOR_PLAYER
+				
+		speech_bubble.show_text(final_text)
+		add_personal_log("Tôi đã trả lời Player: " + final_text)
+		ChatUI.add_npc_reply(final_text)
 		
 	elif action == "npc_greeting":
 		speech_bubble.show_text(text_output)
@@ -527,5 +598,10 @@ func generate_system_prompt() -> String:
 		prompt += "Ký ức gần đây của bạn:\n"
 		for entry in npc_memory["history_logs"]:
 			prompt += "- " + entry + "\n"
-	prompt += "Hãy nhập vai và trả lời tự nhiên, ngắn gọn bằng tiếng Việt dưới 20 từ. Nếu bạn đang khóc vì chuyện cá nhân, hãy kể cho Player nghe và nhờ giúp đỡ."
+			
+	prompt += "Hãy nhập vai và trả lời tự nhiên, ngắn gọn bằng tiếng Việt dưới 20 từ. "
+	
+	if current_state == State.CRYING:
+		prompt += "Bạn đang khóc lóc vì một rắc rối cá nhân. Nếu Player chưa giải quyết, hãy than vãn và nhờ giúp đỡ. NẾU Player ĐÃ ĐƯA RA CÁCH GIẢI QUYẾT hợp lý (ví dụ: tìm thấy đồ, mua cho đồ mới, an ủi hợp lý), hãy vui vẻ cảm ơn, chấp nhận và BẮT BUỘC bắt đầu câu trả lời của bạn bằng từ khóa [SOLVED]."
+		
 	return prompt

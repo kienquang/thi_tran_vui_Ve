@@ -11,76 +11,26 @@ var town_locations = {
 	"spawn_player": Vector2(3000, 2000),
 	"park_center": Vector2(3000, 2300),
 	"town_square": Vector2(2959, 1843),
-	"cafe_entrance": { "door_pos": Vector2(3200, 2000), "final_pos": Vector2(10000, 10000) },
+	"cafe_entrance": { "door_pos": Vector2(4518, 1947), "final_pos": Vector2(7319, 885) },
 	"mayor_house":   { "door_pos": Vector2(1403, 1759), "final_pos": Vector2(5224, -218) },
-	"clinic":        { "door_pos": Vector2(1831, 1506), "final_pos": Vector2(9223, 4147) },
-	"workshop":      { "door_pos": Vector2(1696, 2109), "final_pos": Vector2(9189, 2498) },
-	"town_hall":     { "door_pos": Vector2(2745, 792),  "final_pos": Vector2(11133, 4245) },
-	"library":       { "door_pos": Vector2(1677, 548),  "final_pos": Vector2(10997, 923) },
-	"home_a":        { "door_pos": Vector2(903, 2126),  "final_pos": Vector2(9218, 6136) },
-	"market":        { "door_pos": Vector2(1892, 2694), "final_pos": Vector2(9134, 876) },
-	"dining_hall":   { "door_pos": Vector2(4350, 1680), "final_pos": Vector2(7319, 885) },
-	"dock":          { "door_pos": Vector2(3669, 1791), "final_pos": Vector2(11036, 2583) }
+	"clinic":        { "door_pos": Vector2(3999, 1118), "final_pos": Vector2(7504, 2469) },
+	"workshop":      { "door_pos": Vector2(1071, 2393), "final_pos": Vector2(9218, 6136) },
+	"town_hall":     { "door_pos": Vector2(2913, 1059),  "final_pos": Vector2(11133, 4245) },
+	"library":       { "door_pos": Vector2(1845, 815),  "final_pos": Vector2(10997, 923) },
+	"home_a":        { "door_pos": Vector2(1864, 2376),  "final_pos": Vector2(9189, 2498) },
+	"home_b":        { "door_pos": Vector2(1999, 1773),  "final_pos": Vector2(9223, 4147) },
+	"home_c":        { "door_pos": Vector2(1466, 2971),  "final_pos": Vector2(636, 4921) },
+	"home_d":        { "door_pos": Vector2(1995, 3413),  "final_pos": Vector2(2213, 4921) },
+	"home_e":        { "door_pos": Vector2(4149, 3207),  "final_pos": Vector2(3919, 4923) },
+	"home_f":        { "door_pos": Vector2(5811, 2872),  "final_pos": Vector2(5642, 4914) },
+	"market":        { "door_pos": Vector2(3827, 2058), "final_pos": Vector2(11036, 2583) },
+	"dining_hall":   { "door_pos": Vector2(4002, 2630), "final_pos": Vector2(7422, 4131) },
+	"dock":          { "door_pos": Vector2(2060, 2961), "final_pos": Vector2(9134, 876) }
 }
 
 func _ready():
 	yield(get_tree(), "physics_frame")
 	build_astar_grid()
-	create_house_labels()
-
-func create_house_labels():
-	var font = DynamicFont.new()
-	font.font_data = load("res://assets/ARIAL.TTF")
-	font.size = 28 # Chữ to và rõ
-	font.use_filter = true
-	font.outline_size = 2
-	font.outline_color = Color(0, 0, 0, 1) # Viền đen cực đậm
-	
-	# BẠN CÓ THỂ TỰ SỬA TÊN HIỂN THỊ TẠI ĐÂY
-	var location_names_vn = {
-		"cafe_entrance": "Cafe",
-		"mayor_house": "Mayor House",
-		"clinic": "Clinic",
-		"workshop": "Workshop",
-		"town_hall": "Town Hall",
-		"library": "Library",
-		"home_a": "Home A",
-		"market": "Market",
-		"dining_hall": "Dining Hall",
-		"dock": "Dock"
-	}
-	
-	for key in town_locations.keys():
-		var data = town_locations[key]
-		if typeof(data) == TYPE_DICTIONARY and data.has("door_pos") and location_names_vn.has(key):
-			var pos = data["door_pos"]
-			var lbl = Label.new()
-			lbl.text = location_names_vn[key]
-			lbl.add_font_override("font", font)
-			lbl.align = Label.ALIGN_CENTER
-			lbl.valign = Label.ALIGN_CENTER
-			
-			lbl.rect_min_size = Vector2(240, 35)
-			# Đặt nhãn nổi lên trên cửa khoảng 60 pixel
-			lbl.rect_position = pos + Vector2(-120, -70)
-			
-			var style = StyleBoxFlat.new()
-			style.bg_color = Color(0, 0, 0, 0.4)
-			style.corner_radius_top_left = 6
-			style.corner_radius_top_right = 6
-			style.corner_radius_bottom_left = 6
-			style.corner_radius_bottom_right = 6
-			lbl.add_stylebox_override("normal", style)
-			
-			lbl.add_color_override("font_color", Color(1, 1, 1))
-			
-			# Nâng z_index để chữ luôn đè lên mái nhà (dùng Node2D wrapper)
-			var z_wrapper = Node2D.new()
-			z_wrapper.z_index = 100
-			z_wrapper.position = Vector2(0, 0)
-			z_wrapper.add_child(lbl)
-			add_child(z_wrapper)
-
 
 func find_node_by_name(parent: Node, node_name: String) -> Node:
 	for child in parent.get_children():

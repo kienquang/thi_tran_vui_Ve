@@ -1,0 +1,150 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/ARIAL.TTF" type="DynamicFontData" id=1]
+
+[sub_resource type="DynamicFont" id=1]
+size = 28
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+use_filter = true
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 0.4 )
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="HouseLabels" type="Node2D"]
+z_index = 100
+
+[node name="Cafe" type="Label" parent="."]
+margin_left = 3080.0
+margin_top = 1930.0
+margin_right = 3320.0
+margin_bottom = 1965.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Cafe"
+align = 1
+valign = 1
+
+[node name="MayorHouse" type="Label" parent="."]
+margin_left = 1283.0
+margin_top = 1689.0
+margin_right = 1523.0
+margin_bottom = 1724.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Mayor House"
+align = 1
+valign = 1
+
+[node name="Clinic" type="Label" parent="."]
+margin_left = 1711.0
+margin_top = 1436.0
+margin_right = 1951.0
+margin_bottom = 1471.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Clinic"
+align = 1
+valign = 1
+
+[node name="Workshop" type="Label" parent="."]
+margin_left = 1576.0
+margin_top = 2039.0
+margin_right = 1816.0
+margin_bottom = 2074.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Workshop"
+align = 1
+valign = 1
+
+[node name="TownHall" type="Label" parent="."]
+margin_left = 2625.0
+margin_top = 722.0
+margin_right = 2865.0
+margin_bottom = 757.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Town Hall"
+align = 1
+valign = 1
+
+[node name="Library" type="Label" parent="."]
+margin_left = 1557.0
+margin_top = 478.0
+margin_right = 1797.0
+margin_bottom = 513.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Library"
+align = 1
+valign = 1
+
+[node name="HomeA" type="Label" parent="."]
+margin_left = 783.0
+margin_top = 2056.0
+margin_right = 1023.0
+margin_bottom = 2091.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Home A"
+align = 1
+valign = 1
+
+[node name="Market" type="Label" parent="."]
+margin_left = 1772.0
+margin_top = 2624.0
+margin_right = 2012.0
+margin_bottom = 2659.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Market"
+align = 1
+valign = 1
+
+[node name="DiningHall" type="Label" parent="."]
+margin_left = 4230.0
+margin_top = 1610.0
+margin_right = 4470.0
+margin_bottom = 1645.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Dining Hall"
+align = 1
+valign = 1
+
+[node name="Dock" type="Label" parent="."]
+margin_left = 3549.0
+margin_top = 1721.0
+margin_right = 3789.0
+margin_bottom = 1756.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "Dock"
+align = 1
+valign = 1

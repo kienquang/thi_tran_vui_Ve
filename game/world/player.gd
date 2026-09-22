@@ -21,11 +21,14 @@ func _ready():
 	camera.set_as_toplevel(true)
 	camera.global_position = global_position
 	
+	# Khởi tạo Bảng theo dõi NPC trước để có sẵn font
+	_init_npc_board()
+	
 	reset_cam_btn.hide()
 	reset_cam_btn.connect("pressed", self, "_on_reset_cam_pressed")
 	
-	# Khởi tạo Bảng theo dõi NPC
-	_init_npc_board()
+	# Gán font tiếng Việt cho nút Về lại Nhân Vật
+	reset_cam_btn.add_font_override("font", npc_board_font)
 	
 	# Thiết lập giới hạn màn hình bằng cách đọc kích thước map
 	var bg_map = get_node_or_null("/root/World/BackgroundMap")
@@ -41,6 +44,21 @@ func _ready():
 		var max_zoom_x = tex_size.x / window_size.x
 		var max_zoom_y = tex_size.y / window_size.y
 		max_zoom = min(max_zoom_x, max_zoom_y)
+		
+	# Tìm tất cả các phòng nội thất bằng cách quét cây Scene
+	_find_all_interior_backgrounds(get_tree().root)
+
+var interior_backgrounds = []
+
+func _find_all_interior_backgrounds(node: Node):
+	if node.name == "BackgroundMap":
+		return
+		
+	if node.name == "Background" and node is Sprite:
+		interior_backgrounds.append(node)
+		
+	for child in node.get_children():
+		_find_all_interior_backgrounds(child)
 
 var npc_board_font: DynamicFont
 
@@ -70,6 +88,15 @@ func _init_npc_board():
 	panel.name = "NPCBoard"
 	panel.rect_position = Vector2(20, 180)
 	panel.rect_size = Vector2(400, 360)
+	
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	panel.add_stylebox_override("panel", style)
+	
 	panel.hide()
 	ui_canvas.add_child(panel)
 	
@@ -98,6 +125,7 @@ func _init_npc_board():
 	
 	var list = VBoxContainer.new()
 	list.name = "List"
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 	
 	# --- Cụm nút tạo sự kiện (God Mode) ---
@@ -175,7 +203,24 @@ func update_npc_board():
 		var action = "Đang rảnh rỗi"
 		if n.npc_memory["history_logs"].size() > 0:
 			action = n.npc_memory["history_logs"].back()
-		lbl.text = "👤 " + n.npc_name + ":\n   └ " + action
+			
+		var state_str = "Bình thường"
+		match n.current_state:
+			0: state_str = "Đang đứng chơi" # IDLE
+			1: state_str = "Đang đi bộ" # WALKING
+			2: state_str = "Đang trò chuyện" # TALKING
+			3: state_str = "Đang đợi bạn" # WAITING_FOR_PLAYER
+			4: state_str = "Đang khóc lóc 😭" # CRYING
+			
+		var loc_str = "Ngoài đường"
+		for bg in interior_backgrounds:
+			if is_instance_valid(bg) and bg.texture != null:
+				var rect = Rect2(bg.global_position, bg.texture.get_size())
+				if rect.has_point(n.global_position):
+					loc_str = bg.get_parent().name
+					break
+			
+		lbl.text = "👤 " + n.npc_name + " (" + loc_str + " | " + state_str + "):\n   └ " + action
 		lbl.autowrap = true
 		list.add_child(lbl)
 		
@@ -204,51 +249,77 @@ func _physics_process(delta):
 		
 		update_animation(delta)
 		
-	# Tính toán mục tiêu zoom
 	var target_zoom_vec = desired_zoom
 	
-	if global_position.x > 5000 or global_position.y > 5000:
-		var interiors = get_node_or_null("/root/World/Interiors")
-		var found_room = false
-		if interiors != null:
-			for room in interiors.get_children():
-				var bg = room.get_node_or_null("Background")
-				if bg != null and bg is Sprite and bg.texture != null:
-					var tex_size = bg.texture.get_size()
-					var rect = Rect2(room.global_position, tex_size)
-					if rect.has_point(global_position):
-						found_room = true
-						if camera_mode == "FOLLOW":
-							camera.limit_left = int(rect.position.x)
-							camera.limit_top = int(rect.position.y)
-							camera.limit_right = int(rect.position.x + rect.size.x)
-							camera.limit_bottom = int(rect.position.y + rect.size.y)
-						
-						var window_size = get_viewport_rect().size
-						var zoom_x = rect.size.x / window_size.x
-						var zoom_y = rect.size.y / window_size.y
-						var tz = max(zoom_x, zoom_y)
-						tz = max(tz, 0.3)
-						
-						# Chỉ ép zoom nếu đang Follow
-						if camera_mode == "FOLLOW":
-							target_zoom_vec = Vector2(tz, tz)
-							
-						break
-						
-		if not found_room and camera_mode == "FOLLOW":
-			camera.limit_left = -10000000
-			camera.limit_top = -10000000
-			camera.limit_right = 10000000
-			camera.limit_bottom = 10000000
+	var found_room_rect = Rect2()
+	var in_room = false
+	var active_bg = null
+	
+	for bg in interior_backgrounds:
+		if is_instance_valid(bg) and bg.texture != null:
+			var tex_size = bg.texture.get_size()
+			# Vì background của phòng có centered = false, toạ độ của nó là góc trên trái
+			var rect = Rect2(bg.global_position, tex_size)
+			if rect.has_point(global_position):
+				found_room_rect = rect
+				in_room = true
+				active_bg = bg
+				break
+				
+	_update_room_visibility(active_bg)
+	
+	if in_room:
+		var window_size = get_viewport_rect().size
+		var zoom_x = found_room_rect.size.x / window_size.x
+		var zoom_y = found_room_rect.size.y / window_size.y
+		var tz = max(zoom_x, zoom_y)
+		tz = max(tz, 0.3)
+		
+		# Kích thước thực tế của camera khi đã zoom
+		var cam_w = window_size.x * tz
+		var cam_h = window_size.y * tz
+		
+		var limit_l = found_room_rect.position.x
+		var limit_r = found_room_rect.position.x + found_room_rect.size.x
+		var limit_t = found_room_rect.position.y
+		var limit_b = found_room_rect.position.y + found_room_rect.size.y
+		
+		# Khắc phục lỗi lệch phải/dưới: Nếu giới hạn hẹp hơn camera thì nới rộng đều 2 bên để đưa phòng vào chính giữa
+		if (limit_r - limit_l) < cam_w:
+			var diff = cam_w - (limit_r - limit_l)
+			limit_l -= diff / 2.0
+			limit_r += diff / 2.0
+			
+		if (limit_b - limit_t) < cam_h:
+			var diff = cam_h - (limit_b - limit_t)
+			limit_t -= diff / 2.0
+			limit_b += diff / 2.0
+			
+		if camera_mode == "FOLLOW":
+			camera.limit_left = int(limit_l)
+			camera.limit_top = int(limit_t)
+			camera.limit_right = int(limit_r)
+			camera.limit_bottom = int(limit_b)
+			target_zoom_vec = Vector2(tz, tz)
 	else:
 		var bg_map = get_node_or_null("/root/World/BackgroundMap")
-		if bg_map != null and bg_map.texture != null and camera_mode == "FOLLOW":
+		if bg_map != null and bg_map.texture != null:
 			var tex_size = bg_map.texture.get_size()
-			camera.limit_left = 0
-			camera.limit_top = 0
-			camera.limit_right = int(tex_size.x)
-			camera.limit_bottom = int(tex_size.y)
+			var town_rect = Rect2(0, 0, tex_size.x, tex_size.y)
+			
+			if town_rect.has_point(global_position):
+				if camera_mode == "FOLLOW":
+					camera.limit_left = 0
+					camera.limit_top = 0
+					camera.limit_right = int(tex_size.x)
+					camera.limit_bottom = int(tex_size.y)
+			else:
+				# Nằm ngoài cả town map và không thuộc phòng nào (vùng tự do)
+				if camera_mode == "FOLLOW":
+					camera.limit_left = -10000000
+					camera.limit_top = -10000000
+					camera.limit_right = 10000000
+					camera.limit_bottom = 10000000
 			
 	# Luôn luôn áp dụng mượt zoom dù ở chế độ nào
 	camera.zoom = camera.zoom.linear_interpolate(target_zoom_vec, 5.0 * delta)
@@ -303,4 +374,36 @@ func _unhandled_input(event):
 func _on_reset_cam_pressed():
 	camera_mode = "FOLLOW"
 	reset_cam_btn.hide()
+
+var current_active_bg = null
+
+func _update_room_visibility(active_bg: Node):
+	if active_bg == current_active_bg:
+		return
+	current_active_bg = active_bg
+	
+	var in_room = (active_bg != null)
+	
+	for bg in interior_backgrounds:
+		if is_instance_valid(bg):
+			var room_node = bg.get_parent()
+			var is_active = (bg == active_bg)
+			
+			bg.visible = is_active
+			var ysort = room_node.get_node_or_null("YSort")
+			if ysort != null:
+				ysort.visible = is_active
+				
+	# Ẩn/hiện toàn bộ Town Map khi vào/ra phòng nội thất
+	var bg_map = get_node_or_null("/root/World/BackgroundMap")
+	var tile_map = get_node_or_null("/root/World/CollisionMap")
+	var labels = get_node_or_null("/root/World/HouseLabels")
+	var doors = get_node_or_null("/root/World/Doors") # Ẩn các cánh cửa trên map ngoài
+	var obstacles = get_node_or_null("/root/World/ObstaclePoly3") # Có thể ẩn các chướng ngại vật ngoài map
+	
+	if bg_map != null: bg_map.visible = !in_room
+	if tile_map != null: tile_map.visible = !in_room
+	if labels != null: labels.visible = !in_room
+	if doors != null: doors.visible = !in_room
+	if obstacles != null: obstacles.visible = !in_room
 

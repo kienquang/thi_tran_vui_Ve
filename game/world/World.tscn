@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://assets/town.png" type="Texture" id=1]
 [ext_resource path="res://game/world/Player.tscn" type="PackedScene" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://game/world/rooms/Home Template B.tscn" type="PackedScene" id=17]
 [ext_resource path="res://game/world/rooms/Library.tscn" type="PackedScene" id=18]
 [ext_resource path="res://game/world/rooms/Clinic.tscn" type="PackedScene" id=19]
+[ext_resource path="res://assets/ARIAL.TTF" type="DynamicFontData" id=20]
 [ext_resource path="res://game/world/room_generator.gd" type="Script" id=99]
 [ext_resource path="res://assets/npc/mix__h-skirt_woman__t-elder_man__b-energetic_ponytail__s-energetic_ponytail_walk_64.png" type="Texture" id=101]
 [ext_resource path="res://assets/npc/mix__h-street_creator__t-elder_man__b-energetic_ponytail__s-suit_man_walk_64.png" type="Texture" id=102]
@@ -28,11 +29,19 @@
 [ext_resource path="res://assets/npc/street_creator_walk_64.png" type="Texture" id=106]
 [ext_resource path="res://assets/npc/suit_man_walk_64.png" type="Texture" id=107]
 
-[sub_resource type="RectangleShape2D" id=8]
-extents = Vector2( 200, 20 )
+[sub_resource type="DynamicFont" id=1]
+size = 28
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+use_filter = true
+font_data = ExtResource( 20 )
 
-[sub_resource type="RectangleShape2D" id=9]
-extents = Vector2( 20, 200 )
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 0.4 )
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="World" type="Node2D"]
 position = Vector2( 0, -6 )
@@ -59,12 +68,6 @@ cell_size = Vector2( 32, 32 )
 format = 1
 script = ExtResource( 4 )
 
-[node name="Doors" type="Node2D" parent="."]
-
-[node name="CafeDoor" parent="Doors" instance=ExtResource( 7 )]
-position = Vector2( 3200, 2000 )
-target_position = Vector2( 10000, 10000 )
-
 [node name="Cafe" parent="." instance=ExtResource( 11 )]
 position = Vector2( 6860, 16 )
 
@@ -75,13 +78,65 @@ position = Vector2( 48, 3200 )
 position = Vector2( -32, -1663 )
 
 [node name="Dock Warehouse" parent="Cafe/Dining Hall" instance=ExtResource( 14 )]
-position = Vector2( 1707, -3216 )
+position = Vector2( 1707, -3184 )
 
 [node name="Home Template A" parent="Cafe/Dining Hall" instance=ExtResource( 16 )]
 position = Vector2( 1647, -1645 )
 
 [node name="Home Template B" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 17 )]
 position = Vector2( 12, 1740 )
+
+[node name="Home Template B2" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 17 )]
+position = Vector2( -8580, 2546 )
+
+[node name="ObstaclePoly" parent="Cafe/Dining Hall/Home Template A/Home Template B2" instance=ExtResource( 8 )]
+position = Vector2( 173, 950 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Cafe/Dining Hall/Home Template A/Home Template B2/ObstaclePoly"]
+polygon = PoolVector2Array( -139, -922, -109, 166, 414, 130, 342, -46, 250, -157, 168, -243, -55, -333, -34, -623, 241, -635, 1042, -647, 1039, -453, 1034, -434, 1037, -394, 1042, -345, 1042, -191, 784, -69, 601, 99, 1132, 96, 1129, -928 )
+
+[node name="Door" parent="Cafe/Dining Hall/Home Template A/Home Template B2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 501, 69 )
+target_position = Vector2( 1463, 3144 )
+
+[node name="Home Template B3" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 17 )]
+position = Vector2( -3564, 2550 )
+
+[node name="ObstaclePoly" parent="Cafe/Dining Hall/Home Template A/Home Template B3" instance=ExtResource( 8 )]
+position = Vector2( 173, 950 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Cafe/Dining Hall/Home Template A/Home Template B3/ObstaclePoly"]
+polygon = PoolVector2Array( -139, -922, -109, 166, 414, 130, 343, -94, 250, -157, 134, -243, -55, -333, -34, -623, 241, -635, 1042, -647, 1039, -453, 1043, -428, 1049, -380, 1042, -345, 1042, -191, 694, -64, 601, 99, 1132, 96, 1129, -928 )
+
+[node name="Door" parent="Cafe/Dining Hall/Home Template A/Home Template B3/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 501, 69 )
+target_position = Vector2( 5805, 2987 )
+
+[node name="Home Template B4" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 17 )]
+position = Vector2( -5294, 2550 )
+
+[node name="ObstaclePoly" parent="Cafe/Dining Hall/Home Template A/Home Template B4" instance=ExtResource( 8 )]
+position = Vector2( 173, 950 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Cafe/Dining Hall/Home Template A/Home Template B4/ObstaclePoly"]
+polygon = PoolVector2Array( -139, -922, -109, 166, 414, 130, 334, -62, 250, -157, 180, -215, -55, -333, -34, -623, 241, -635, 1042, -647, 1039, -453, 1041, -432, 1047, -398, 1042, -345, 1042, -191, 741, -56, 601, 99, 1132, 96, 1129, -928 )
+
+[node name="Door" parent="Cafe/Dining Hall/Home Template A/Home Template B4/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 501, 69 )
+target_position = Vector2( 4152, 3405 )
+
+[node name="Home Template B5" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 17 )]
+position = Vector2( -7000, 2546 )
+
+[node name="ObstaclePoly" parent="Cafe/Dining Hall/Home Template A/Home Template B5" instance=ExtResource( 8 )]
+position = Vector2( 173, 950 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Cafe/Dining Hall/Home Template A/Home Template B5/ObstaclePoly"]
+polygon = PoolVector2Array( -139, -922, -109, 166, 414, 130, 341, -66, 250, -157, 190, -243, -55, -333, -34, -623, 241, -635, 1042, -647, 1039, -453, 1037, -417, 1051, -368, 1042, -345, 1042, -191, 749, -3, 601, 99, 1132, 96, 1129, -928 )
+
+[node name="Door" parent="Cafe/Dining Hall/Home Template A/Home Template B5/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
+position = Vector2( 501, 69 )
+target_position = Vector2( 1991, 3589 )
 
 [node name="Library" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 18 )]
 position = Vector2( 1792, -1555 )
@@ -94,41 +149,6 @@ position = Vector2( 1982, 1829 )
 
 [node name="Workshop" parent="Cafe/Dining Hall/Home Template A" instance=ExtResource( 12 )]
 position = Vector2( 111, 3632 )
-
-[node name="Interiors" type="Node2D" parent="."]
-position = Vector2( 10000, 10000 )
-
-[node name="CafeInterior" type="Node2D" parent="Interiors"]
-
-[node name="Floor" type="ColorRect" parent="Interiors/CafeInterior"]
-margin_left = -200.0
-margin_top = -200.0
-margin_right = 200.0
-margin_bottom = 200.0
-color = Color( 0.4, 0.2, 0.1, 1 )
-
-[node name="Walls" type="StaticBody2D" parent="Interiors/CafeInterior"]
-
-[node name="Top" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
-position = Vector2( 0, -200 )
-shape = SubResource( 8 )
-
-[node name="Bottom" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
-position = Vector2( 0, 200 )
-shape = SubResource( 8 )
-
-[node name="Left" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
-position = Vector2( -200, 0 )
-shape = SubResource( 9 )
-
-[node name="Right" type="CollisionShape2D" parent="Interiors/CafeInterior/Walls"]
-position = Vector2( 200, 0 )
-shape = SubResource( 9 )
-
-[node name="ExitDoor" parent="Interiors/CafeInterior" instance=ExtResource( 7 )]
-position = Vector2( 0, 150 )
-target_position = Vector2( 3200, 2050 )
-prompt_text = "[E] Đi ra ngoài"
 
 [node name="YSort" type="YSort" parent="."]
 
@@ -218,6 +238,7 @@ target_position = Vector2( 9218, 6136 )
 
 [node name="Door6" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 63, 1212 )
+target_position = Vector2( 636, 4921 )
 
 [node name="Door7" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 657, 1202 )
@@ -225,6 +246,7 @@ target_position = Vector2( 9134, 876 )
 
 [node name="Door8" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 592, 1654 )
+target_position = Vector2( 2213, 4921 )
 
 [node name="Door9" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 1238, 1646 )
@@ -234,9 +256,11 @@ position = Vector2( 2007, 1685 )
 
 [node name="Door11" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 2746, 1448 )
+target_position = Vector2( 3919, 4932 )
 
 [node name="Door12" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 4408, 1113 )
+target_position = Vector2( 5642, 4914 )
 
 [node name="Door13" parent="ObstaclePoly/CollisionPolygon2D2/Door" instance=ExtResource( 7 )]
 position = Vector2( 3361, 844 )
@@ -439,7 +463,7 @@ target_position = Vector2( 4518, 2114 )
 position = Vector2( 1722, 230 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly2/CollisionPolygon2D2/ObstaclePoly"]
-polygon = PoolVector2Array( -84, -378, -63, 696, 351, 688, 341, 483, 13, 495, 48, -216, 805, -196, 805, -48, 1110, -48, 1128, 480, 851, 495, 843, 170, 767, 165, 760, 28, 711, 28, 719, 231, 793, 231, 795, 493, 554, 478, 556, 25, 526, 25, 528, 665, 1232, 660, 1237, -378 )
+polygon = PoolVector2Array( -84, -378, -63, 696, 351, 688, 341, 483, 13, 495, 48, -216, 805, -196, 805, -48, 1110, -48, 1128, 480, 851, 495, 858, 492, 858, 477, 830, 476, 797, 472, 799, 488, 795, 484, 796, 482, 795, 493, 554, 478, 551, 480, 540, 480, 528, 665, 1232, 660, 1237, -378 )
 
 [node name="Door" parent="ObstaclePoly2/CollisionPolygon2D2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 445, 640 )
@@ -459,7 +483,7 @@ target_position = Vector2( 2063, 3102 )
 position = Vector2( -3332, 1186 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/CollisionPolygon2D2/ObstaclePoly"]
-polygon = PoolVector2Array( -187, -218, -170, 997, 369, 994, 346, 775, 135, 780, 141, 549, 104, 549, 104, 712, -113, 720, -93, 293, 295, 321, 312, 284, 187, 281, 195, 45, 617, 36, 583, 316, 760, 375, 971, 313, 982, 735, 751, 555, 745, 777, 517, 792, 523, 940, 1039, 926, 1039, -212 )
+polygon = PoolVector2Array( -187, -218, -170, 997, 369, 994, 346, 775, 135, 780, 144, 771, 113, 710, 104, 712, -113, 720, -93, 293, -72, 299, 183, 289, 187, 281, 195, 45, 617, 36, 624, 313, 760, 315, 971, 313, 982, 735, 751, 555, 745, 777, 517, 792, 523, 940, 1039, 926, 1039, -212 )
 
 [node name="Door" parent="ObstaclePoly4/CollisionPolygon2D2/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 446, 843 )
@@ -469,7 +493,7 @@ target_position = Vector2( 4025, 1282 )
 position = Vector2( -1684, 1150 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly"]
-polygon = PoolVector2Array( -156, -148, -140, 995, 407, 998, 401, 818, 197, 815, 194, 565, -91, 541, -80, 333, 264, 314, 275, 487, 296, 487, 312, 105, 692, 97, 700, 495, 721, 500, 732, 320, 972, 314, 985, 535, 775, 535, 775, 863, 568, 845, 590, 990, 1128, 995, 1128, -167 )
+polygon = PoolVector2Array( -156, -148, -140, 995, 407, 998, 401, 818, 197, 815, 194, 565, -91, 541, -80, 333, 264, 314, 282, 311, 298, 309, 312, 105, 692, 97, 704, 309, 713, 321, 732, 320, 972, 314, 985, 535, 775, 535, 775, 863, 568, 845, 590, 990, 1128, 995, 1128, -167 )
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 491, 910 )
@@ -479,7 +503,7 @@ target_position = Vector2( 1862, 2497 )
 position = Vector2( 127, 1637 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly2"]
-polygon = PoolVector2Array( -86, -563, -91, 594, 407, 584, 388, 401, -32, 414, -37, 161, 194, 148, 202, -46, -48, -30, -37, -294, 285, -296, 267, -482, 388, -466, 417, -275, 616, -267, 627, -450, 775, -471, 807, -264, 985, -288, 985, -425, 1085, -455, 1068, -38, 864, -19, 837, 161, 1101, 134, 1071, 436, 627, 444, 649, 562, 1120, 554, 1133, -584 )
+polygon = PoolVector2Array( -86, -563, -91, 594, 407, 584, 388, 401, -32, 414, -37, 161, -40, 101, -46, 1, -48, -30, -37, -294, -16, -497, 267, -482, 385, -501, 486, -493, 567, -495, 646, -480, 775, -471, 857, -473, 943, -473, 1007, -475, 1085, -455, 1068, -38, 1067, 14, 1075, 78, 1101, 134, 1071, 436, 627, 444, 649, 562, 1120, 554, 1133, -584 )
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly2/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 515, 530 )
@@ -489,7 +513,7 @@ target_position = Vector2( 3534, 1886 )
 position = Vector2( -3427, 2923 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly3"]
-polygon = PoolVector2Array( -51, -276, -57, 827, 342, 824, 331, 690, 60, 690, 68, 83, 225, 63, 248, 231, 431, 237, 433, 191, 274, 186, 288, -2, 787, -5, 778, 149, 599, 177, 599, 229, 770, 234, 775.389, 358.448, 781, 488, 830, 494, 818, 97, 1075, 100, 1089, 648, 570, 679, 573, 822, 1180, 793, 1149, -268 )
+polygon = PoolVector2Array( -51, -276, -57, 827, 342, 824, 331, 690, 60, 690, 68, 83, 225, 63, 245, 52, 257, 39, 264, 37, 280, 20, 288, -2, 787, -5, 780, 20, 784, 30, 784, 39, 795, 56, 799, 85, 812, 75, 824, 131, 818, 97, 1075, 100, 1089, 648, 570, 679, 573, 822, 1180, 793, 1149, -268 )
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly3/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 462, 753 )
@@ -499,7 +523,7 @@ target_position = Vector2( 1996, 1919 )
 position = Vector2( -1617, 3679 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly5"]
-polygon = PoolVector2Array( -211, -938, -182, 148, 365, 103, 337, -168, 208, -174, 208, -436, 177, -456, 166, -305, -94, -311, -88, -639, 163, -633, 166, -570, 220, -579, 214, -667, 676, -676, 676, -567, 716, -550, 716, -647, 987, -650, 998, -465, 685, -465, 682, -371, 998, -362, 978, -211, 513, -197, 513, 117, 1084, 120, 1072, -935 )
+polygon = PoolVector2Array( -211, -938, -182, 148, 365, 103, 310, -105, 208, -174, 203, -215, 186, -251, 133, -288, -94, -311, -88, -639, 163, -633, 190, -639, 211, -647, 214, -667, 676, -676, 679, -668, 698, -664, 716, -647, 987, -650, 998, -465, 999, -434, 1003, -392, 998, -362, 978, -211, 641, -103, 513, 117, 1084, 120, 1072, -935 )
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly5/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 445, 43 )
@@ -519,7 +543,7 @@ target_position = Vector2( 2902, 1232 )
 position = Vector2( -1666, 5585 )
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly4/ObstaclePoly4"]
-polygon = PoolVector2Array( -58, -965, -48, 190, 432, 165, 434, 43, 343, 43, 343, -33, 76, -36, 84, -706, 775, -714, 803, -445, 841, -452, 848, -569, 848, -572, 1052, -569, 1067, -38, 884, -59, 856, -236, 790, -226, 787, -66, 615, -33, 615, 15, 544, 15, 554, 167, 1146, 178, 1161, -937 )
+polygon = PoolVector2Array( -58, -965, -48, 190, 432, 165, 402, 105, 343, 43, 304, 14, 76, -36, 84, -706, 775, -714, 795, -697, 826, -635, 848, -569, 848, -572, 1052, -569, 1067, -38, 884, -59, 848, -56, 807, -68, 787, -66, 660, -20, 615, 15, 570, 53, 554, 167, 1146, 178, 1161, -937 )
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 495, 99 )
@@ -528,3 +552,189 @@ target_position = Vector2( 1072, 2565 )
 [node name="Door2" parent="." instance=ExtResource( 7 )]
 position = Vector2( 4002, 2630 )
 target_position = Vector2( 7422, 4131 )
+
+[node name="HouseLabels" type="Node2D" parent="."]
+position = Vector2( 63, 39 )
+z_index = 100
+
+[node name="nha an" type="Label" parent="HouseLabels"]
+margin_left = 3694.0
+margin_top = 2274.0
+margin_right = 3934.0
+margin_bottom = 2309.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ ĂN"
+align = 1
+valign = 1
+
+[node name="clinic" type="Label" parent="HouseLabels"]
+margin_left = 3686.0
+margin_top = 737.0
+margin_right = 4020.0
+margin_bottom = 844.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "BỆNH VIỆN"
+align = 1
+valign = 1
+
+[node name="nha o B" type="Label" parent="HouseLabels"]
+margin_left = 1711.0
+margin_top = 1436.0
+margin_right = 1951.0
+margin_bottom = 1471.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ Ở B"
+align = 1
+valign = 1
+
+[node name="nha o A" type="Label" parent="HouseLabels"]
+margin_left = 1576.0
+margin_top = 2039.0
+margin_right = 1816.0
+margin_bottom = 2074.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ Ở A"
+align = 1
+valign = 1
+
+[node name="TownHall" type="Label" parent="HouseLabels"]
+margin_left = 2625.0
+margin_top = 722.0
+margin_right = 2865.0
+margin_bottom = 757.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "TÒA THỊ CHÍNH"
+align = 1
+valign = 1
+
+[node name="Library" type="Label" parent="HouseLabels"]
+margin_left = 1557.0
+margin_top = 478.0
+margin_right = 1797.0
+margin_bottom = 513.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "THƯ VIỆN"
+align = 1
+valign = 1
+
+[node name="nha hoi thao" type="Label" parent="HouseLabels"]
+margin_left = 783.0
+margin_top = 2056.0
+margin_right = 1023.0
+margin_bottom = 2091.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ HỘI THẢO"
+align = 1
+valign = 1
+
+[node name="nha kho" type="Label" parent="HouseLabels"]
+margin_left = 1765.0
+margin_top = 2631.0
+margin_right = 2005.0
+margin_bottom = 2666.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ KHO"
+align = 1
+valign = 1
+
+[node name="nha o C" type="Label" parent="HouseLabels"]
+margin_left = 1134.0
+margin_top = 2638.0
+margin_right = 1374.0
+margin_bottom = 2673.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ Ở C"
+align = 1
+valign = 1
+
+[node name="nha o D" type="Label" parent="HouseLabels"]
+margin_left = 1766.0
+margin_top = 3133.0
+margin_right = 2006.0
+margin_bottom = 3168.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ Ở D"
+align = 1
+valign = 1
+
+[node name="nha o E" type="Label" parent="HouseLabels"]
+margin_left = 3795.0
+margin_top = 2924.0
+margin_right = 4035.0
+margin_bottom = 2972.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ Ở E"
+align = 1
+valign = 1
+
+[node name="nha o F" type="Label" parent="HouseLabels"]
+margin_left = 5411.0
+margin_top = 2597.0
+margin_right = 5651.0
+margin_bottom = 2632.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "NHÀ Ở F"
+align = 1
+valign = 1
+
+[node name="cafe" type="Label" parent="HouseLabels"]
+margin_left = 4230.0
+margin_top = 1610.0
+margin_right = 4470.0
+margin_bottom = 1645.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "CAFE"
+align = 1
+valign = 1
+
+[node name="Dock" type="Label" parent="HouseLabels"]
+margin_left = 3538.0
+margin_top = 1667.0
+margin_right = 3778.0
+margin_bottom = 1702.0
+rect_min_size = Vector2( 240, 35 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "CHỢ"
+align = 1
+valign = 1
