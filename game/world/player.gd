@@ -125,7 +125,7 @@ func _init_npc_board():
 	
 	var list = VBoxContainer.new()
 	list.name = "List"
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.size_flags_horizontal = 3
 	scroll.add_child(list)
 	
 	# --- Cụm nút tạo sự kiện (God Mode) ---
@@ -192,9 +192,18 @@ func update_npc_board():
 		
 	var list = $UICanvas/NPCBoard/VBox/ScrollContainer/List
 	for c in list.get_children():
+		list.remove_child(c)
 		c.queue_free()
 		
 	var npcs = get_tree().get_nodes_in_group("npcs")
+	print("Updating NPC Board, found NPCs: ", npcs.size())
+	
+	var dummy = Label.new()
+	dummy.add_font_override("font", npc_board_font)
+	dummy.text = "Tổng số NPC tìm thấy: " + str(npcs.size())
+	dummy.modulate = Color(0, 1, 0) # Màu xanh lá cây
+	list.add_child(dummy)
+	
 	for n in npcs:
 		var lbl = Label.new()
 		lbl.add_font_override("font", npc_board_font)

@@ -91,8 +91,12 @@ func _ready():
 		npc_personality = "Đang thiết kế lại thị trấn, thường đi khảo sát tòa thị chính. Vợ của David."
 		schedule = { 6: "home_e", 8: "town_hall", 12: "market", 15: "park_center", 18: "town_hall", 21: "home_e" }
 
-	npc_memory["name"] = npc_name
-	npc_memory["personality"] = npc_personality
+	npc_memory = {
+		"name": npc_name,
+		"personality": npc_personality,
+		"relationships": {},
+		"history_logs": []
+	}
 	
 	if npc_sprite != null:
 		sprite.texture = npc_sprite
