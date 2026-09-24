@@ -45,6 +45,11 @@ var nearby_npcs = []
 var npc_cooldown = 0.0
 var chat_partner = null
 
+# He thong nhiem vu
+var pending_quest = null
+var quest_gen_cooldown = 0.0
+var quest_indicator = null
+
 func _ready():
 	add_to_group("npcs")
 	randomize()
@@ -95,7 +100,8 @@ func _ready():
 		"name": npc_name,
 		"personality": npc_personality,
 		"relationships": {},
-		"history_logs": []
+		"history_logs": [],
+		"heart_level": 5
 	}
 	
 	if npc_sprite != null:
@@ -108,14 +114,16 @@ func _ready():
 	font.use_filter = true
 	
 	var name_label = Label.new()
+	name_label.name = "NameLabel"
 	name_label.text = npc_name
 	name_label.add_font_override("font", font)
 	name_label.align = Label.ALIGN_CENTER
 	name_label.valign = Label.ALIGN_CENTER
-	name_label.rect_min_size = Vector2(160, 24)
-	name_label.rect_position = Vector2(-80, -65)
+	name_label.rect_min_size = Vector2(160, 48)
+	name_label.rect_position = Vector2(-80, -75)
 	name_label.modulate = Color(1, 0.9, 0.4) # Màu vàng nhạt
-	
+
+
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0, 0, 0, 0.5)
 	style.corner_radius_top_left = 4
@@ -138,6 +146,11 @@ func _ready():
 	
 	base_wander_position = global_position
 	start_idle_routine()
+
+func update_name_label():
+	var lbl = get_node_or_null("NameLabel")
+	if lbl:
+		lbl.text = npc_name
 
 func _disable_npc_collisions():
 	for n in get_tree().get_nodes_in_group("npcs"):
@@ -193,6 +206,9 @@ func update_schedule(hour, force_update = false):
 				entrance_door_pos = Vector2.ZERO
 				
 			base_wander_position = final_destination
+			# KHONG di chuyen khi dang co quest active hoac pending quest
+			if pending_quest != null or QuestManager.has_active_from(npc_name):
+				return
 			reevaluate_path()
 			current_state = State.WALKING
 			var w = TimeManager.current_weather
@@ -315,6 +331,8 @@ func _on_weather_changed(_weather_type):
 func _process(delta):
 	if npc_cooldown > 0:
 		npc_cooldown -= delta
+	if quest_gen_cooldown > 0:
+		quest_gen_cooldown -= delta
 
 	if player_near and Input.is_action_just_pressed("interact"):
 		if current_state != State.TALKING:
@@ -531,13 +549,30 @@ func start_idle_routine():
 		
 	current_state = State.IDLE
 	var wait_time = 3.0
-	if TimeManager.is_raining:
+	if TimeManager.current_weather == "RAIN" or TimeManager.current_weather == "STORM":
 		wait_time = 0.5 
 		
 	yield(get_tree().create_timer(wait_time), "timeout")
 	if current_state == State.IDLE:
+		# Neu dang co quest cho player hoac player dang lam quest tu NPC nay => dung cho
+		if pending_quest != null or QuestManager.has_active_from(npc_name):
+			current_state = State.IDLE
+			return
+		
+		# Tu dong tao quest voi xac suat 15%
+		if quest_gen_cooldown <= 0 and pending_quest == null and not QuestManager.has_active_from(npc_name):
+			if randf() < 0.15:
+				_generate_quest()
+		
+		# Xác suất bắt chuyện với NPC khác
+		if nearby_npcs.size() > 0 and randf() < 0.2 and not (TimeManager.current_weather in ["RAIN", "STORM"]):
+			var target = nearby_npcs[randi() % nearby_npcs.size()]
+			if is_instance_valid(target) and target.current_state in [State.IDLE, State.WALKING] and target.npc_cooldown <= 0:
+				initiate_npc_chat(target)
+				return
+		
 		# Tỉ lệ 10% sinh sự (Drama)
-		if randf() < 0.1 and nearby_npcs.size() == 0 and not TimeManager.is_raining:
+		if randf() < 0.1 and nearby_npcs.size() == 0 and not (TimeManager.current_weather in ["RAIN", "STORM"]):
 			_trigger_random_drama()
 		else:
 			set_random_target()
@@ -624,3 +659,53 @@ func generate_system_prompt() -> String:
 		prompt += "Bạn đang khóc lóc vì một rắc rối cá nhân. Nếu Player chưa giải quyết, hãy than vãn và nhờ giúp đỡ. NẾU Player ĐÃ ĐƯA RA CÁCH GIẢI QUYẾT hợp lý (ví dụ: tìm thấy đồ, mua cho đồ mới, an ủi hợp lý), hãy vui vẻ cảm ơn, chấp nhận và BẮT BUỘC bắt đầu câu trả lời của bạn bằng từ khóa [SOLVED]."
 		
 	return prompt
+
+func _generate_quest():
+	# Shop NPC khong tao quest
+	if QuestManager.is_shop(npc_name):
+		return
+	quest_gen_cooldown = 90.0
+	var roll = randf()
+	if roll < 0.5:
+		var shop_items = QuestManager.get_shop_items("Tieu thuong Anna")
+		if shop_items.size() > 0:
+			var item = shop_items[randi() % shop_items.size()]
+			var reward = int(item["price"] * 1.5 + rand_range(5, 15))
+			pending_quest = QuestManager.make_fetch_quest(npc_name, item["name"], "Tieu thuong Anna", reward)
+			_show_quest_indicator()
+			WorldLog.add_entry(npc_name + " co nhiem vu can nguoi giup do! (!)")
+	else:
+		var all_npcs = get_tree().get_nodes_in_group("npcs")
+		var candidates = []
+		for n in all_npcs:
+			if n != self and not QuestManager.is_shop(n.npc_name) and n.npc_name != npc_name:
+				candidates.append(n.npc_name)
+		if candidates.size() > 0:
+			var target = candidates[randi() % candidates.size()]
+			var reward = int(rand_range(20, 50))
+			pending_quest = QuestManager.make_deliver_quest(npc_name, target, reward)
+			_show_quest_indicator()
+			WorldLog.add_entry(npc_name + " co nhiem vu can nguoi giup do! (!)")
+
+func _show_quest_indicator():
+	if quest_indicator == null:
+		quest_indicator = Label.new()
+		var font = DynamicFont.new()
+		font.font_data = load("res://assets/ARIAL.TTF")
+		font.size = 24
+		font.use_filter = true
+		quest_indicator.add_font_override("font", font)
+		quest_indicator.add_color_override("font_color", Color(1.0, 0.85, 0.0))
+		quest_indicator.rect_position = Vector2(-8, -108)
+		add_child(quest_indicator)
+	quest_indicator.text = "(!)"
+	quest_indicator.show()
+
+func _hide_quest_indicator():
+	if quest_indicator != null:
+		quest_indicator.hide()
+
+func clear_pending_quest():
+	pending_quest = null
+	quest_gen_cooldown = 90.0
+	_hide_quest_indicator()

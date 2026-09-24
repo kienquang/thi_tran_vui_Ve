@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Node",
+"class": "UIUtils",
+"language": "GDScript",
+"path": "res://game/ui/ui_utils.gd"
+} ]
+_global_script_class_icons={
+"UIUtils": ""
+}
+
 [application]
 
 config/name="thi_tran_vui_Ve"
@@ -20,6 +30,8 @@ WorldLog="*res://game/world/world_log.gd"
 ChatUI="*res://game/ui/ChatUI.tscn"
 TimeManager="*res://game/world/time_manager.gd"
 JournalUI="*res://game/ui/JournalUI.tscn"
+QuestManager="*res://game/world/quest_manager.gd"
+QuestUI="*res://game/ui/QuestUI.tscn"
 
 [gui]
 

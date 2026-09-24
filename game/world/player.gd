@@ -24,6 +24,7 @@ func _ready():
 	# Khởi tạo Bảng theo dõi NPC trước để có sẵn font
 	_init_npc_board()
 	_init_god_mode_ui()
+	QuestUI.update_coins(coins)
 	
 	reset_cam_btn.hide()
 	reset_cam_btn.connect("pressed", self, "_on_reset_cam_pressed")
@@ -71,6 +72,40 @@ var btn_electric: Button
 var btn_water: Button
 var btn_rent: Button
 
+# Hệ thống kinh tế
+var coins: int = 150
+
+func add_coins(amount: int):
+	coins += amount
+	QuestUI.update_coins(coins)
+
+func spend_coins(amount: int) -> bool:
+	if coins >= amount:
+		coins -= amount
+		QuestUI.update_coins(coins)
+		return true
+	return false
+
+# Tui do (ten_vat_pham -> so_luong)
+var inventory: Dictionary = {}
+
+func add_item(item_name: String, count: int = 1):
+	if item_name in inventory:
+		inventory[item_name] += count
+	else:
+		inventory[item_name] = count
+	QuestUI.refresh_inventory(inventory)
+
+func remove_item(item_name: String, count: int = 1) -> bool:
+	if inventory.get(item_name, 0) >= count:
+		inventory[item_name] -= count
+		if inventory[item_name] <= 0:
+			inventory.erase(item_name)
+		QuestUI.refresh_inventory(inventory)
+		return true
+	return false
+
+
 func _init_npc_board():
 	var ui_canvas = $UICanvas
 	
@@ -79,16 +114,18 @@ func _init_npc_board():
 	npc_board_font.size = 14
 	
 	var btn = Button.new()
-	btn.text = "📍 Xem Lịch Trình NPC"
-	btn.rect_position = Vector2(20, 140)
+	btn.text = "Lich Trinh NPC"
+	btn.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	btn.rect_position = Vector2(130, -38)
+	btn.rect_min_size = Vector2(130, 32)
 	btn.add_font_override("font", npc_board_font)
 	btn.connect("pressed", self, "_on_npc_board_toggle")
 	ui_canvas.add_child(btn)
 	
 	var panel = PanelContainer.new()
 	panel.name = "NPCBoard"
-	panel.rect_position = Vector2(20, 180)
-	panel.rect_size = Vector2(400, 360)
+	panel.rect_position = Vector2(320, 170)
+	panel.rect_size = Vector2(400, 370)
 	
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
@@ -132,49 +169,58 @@ func _init_npc_board():
 func _init_god_mode_ui():
 	var ui_canvas = $UICanvas
 	
-	# Dropdown chọn thời tiết
-	var weather_opt = OptionButton.new()
-	weather_opt.name = "WeatherOption"
-	weather_opt.rect_position = Vector2(800, 20)
-	weather_opt.add_font_override("font", npc_board_font)
-	weather_opt.add_item("☀️ Nắng ráo", 0)
-	weather_opt.add_item("🌧️ Mưa rào", 1)
-	weather_opt.add_item("⛈️ Bão tố", 2)
-	weather_opt.add_item("❄️ Tuyết rơi", 3)
-	weather_opt.add_item("🌫️ Sương mù", 4)
-	weather_opt.connect("item_selected", self, "_on_weather_selected")
-	ui_canvas.add_child(weather_opt)
+	var god_mode_vbox = VBoxContainer.new()
+	god_mode_vbox.rect_position = Vector2(20, 60)
+	god_mode_vbox.add_constant_override("separation", 10)
+	ui_canvas.add_child(god_mode_vbox)
 
 	# Nút bật/tắt bảng sự kiện
 	var event_toggle_btn = Button.new()
-	event_toggle_btn.text = "🌍 Sự Kiện Thị Trấn"
-	event_toggle_btn.rect_position = Vector2(800, 60)
+	event_toggle_btn.text = "Su Kien Thi Tran"
+	event_toggle_btn.rect_min_size = Vector2(160, 32)
 	event_toggle_btn.add_font_override("font", npc_board_font)
+	UIUtils.style_button(event_toggle_btn, Color(0.22, 0.42, 0.28))
 	event_toggle_btn.connect("pressed", self, "_on_event_panel_toggle")
-	ui_canvas.add_child(event_toggle_btn)
+	god_mode_vbox.add_child(event_toggle_btn)
 	
 	# Bảng Sự Kiện
 	var event_panel = VBoxContainer.new()
 	event_panel.name = "EventControls"
-	event_panel.rect_position = Vector2(800, 100)
+	event_panel.add_constant_override("separation", 4)
 	event_panel.hide()
-	ui_canvas.add_child(event_panel)
-	
+	god_mode_vbox.add_child(event_panel)
+
+	var weather_opt = OptionButton.new()
+	weather_opt.name = "WeatherOption"
+	weather_opt.rect_min_size = Vector2(160, 32)
+	weather_opt.add_font_override("font", npc_board_font)
+	weather_opt.add_item("Nang rao", 0)
+	weather_opt.add_item("Mua rao", 1)
+	weather_opt.add_item("Bao to", 2)
+	weather_opt.add_item("Tuyet roi", 3)
+	weather_opt.add_item("Suong mu", 4)
+	UIUtils.style_button(weather_opt, Color(0.18, 0.32, 0.52))
+	weather_opt.connect("item_selected", self, "_on_weather_selected")
+	god_mode_vbox.add_child(weather_opt)
+
 	btn_electric = Button.new()
 	btn_electric.text = "⚡ Cắt Điện"
 	btn_electric.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_electric, Color(0.8, 0.4, 0.2))
 	btn_electric.connect("pressed", self, "_toggle_event", ["electric"])
 	event_panel.add_child(btn_electric)
 	
 	btn_water = Button.new()
 	btn_water.text = "💧 Cắt Nước"
 	btn_water.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_water, Color(0.2, 0.5, 0.8))
 	btn_water.connect("pressed", self, "_toggle_event", ["water"])
 	event_panel.add_child(btn_water)
 	
 	btn_rent = Button.new()
 	btn_rent.text = "💰 Tăng Giá Nhà"
 	btn_rent.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_rent, Color(0.8, 0.6, 0.1))
 	btn_rent.connect("pressed", self, "_toggle_event", ["rent"])
 	event_panel.add_child(btn_rent)
 
@@ -344,6 +390,8 @@ func _physics_process(delta):
 			camera.limit_right = int(limit_r)
 			camera.limit_bottom = int(limit_b)
 			target_zoom_vec = Vector2(tz, tz)
+				
+
 	else:
 		var bg_map = get_node_or_null("/root/World/BackgroundMap")
 		if bg_map != null and bg_map.texture != null:
@@ -449,4 +497,8 @@ func _update_room_visibility(active_bg: Node):
 	if labels != null: labels.visible = !in_room
 	if doors != null: doors.visible = !in_room
 	if obstacles != null: obstacles.visible = !in_room
+
+
+
+
 
