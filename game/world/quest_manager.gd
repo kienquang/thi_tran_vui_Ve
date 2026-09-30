@@ -9,18 +9,32 @@ var active_quests = []
 var completed_quests = []
 var _next_id = 0
 
-const SHOP_ITEMS = {
-	"Tieu thuong Anna": [
-		{"name": "Trai Tao", "price": 10, "display": "Trai Tao"},
-		{"name": "Hoa Dong Tien", "price": 15, "display": "Hoa Dong Tien"},
-		{"name": "Nam Rung", "price": 20, "display": "Nam Rung"},
-		{"name": "Nhan Cuoi", "price": 80, "display": "Nhan Cuoi"}
+var shop_items = {
+	"Tiểu thương Anna": [
+		{"name": "Trai Tao", "price": 10, "display": "Trái Táo"},
+		{"name": "Hoa Dong Tien", "price": 15, "display": "Hoa Đồng Tiền"}
 	],
-	"Pha che David": [
-		{"name": "Ca Phe Sua", "price": 12, "display": "Ca Phe Sua"},
-		{"name": "Banh Ngot", "price": 18, "display": "Banh Ngot"}
+	"Pha chế David": [
+		{"name": "Ca Phe Sua", "price": 12, "display": "Cà Phê Sữa"}
 	]
 }
+
+func add_dynamic_shop_item(shop_name: String, item: Dictionary):
+	if not shop_items.has(shop_name):
+		shop_items[shop_name] = []
+	
+	# Kiểm tra trùng lặp
+	for i in shop_items[shop_name]:
+		if i["name"] == item["name"]:
+			return
+	shop_items[shop_name].append(item)
+
+func remove_dynamic_shop_item(shop_name: String, item_name: String):
+	if shop_items.has(shop_name):
+		for i in range(shop_items[shop_name].size() - 1, -1, -1):
+			if shop_items[shop_name][i]["name"] == item_name:
+				shop_items[shop_name].remove(i)
+				break
 
 func make_fetch_quest(giver: String, item_name: String, shop_owner: String, reward: int) -> Dictionary:
 	return {
@@ -90,6 +104,10 @@ func complete_quest_at(giver_npc: String) -> int:
 	if q.empty():
 		return 0
 	var reward = q.get("reward_coins", 0)
+	
+	if q["type"] == QuestType.FETCH_ITEM:
+		remove_dynamic_shop_item(q["shop_owner"], q["required_item"])
+		
 	q["status"] = "done"
 	active_quests.erase(q)
 	completed_quests.append(q)
@@ -101,7 +119,7 @@ func get_active_count() -> int:
 	return active_quests.size()
 
 func get_shop_items(npc_name: String) -> Array:
-	return SHOP_ITEMS.get(npc_name, [])
+	return shop_items.get(npc_name, [])
 
 func is_shop(npc_name: String) -> bool:
-	return npc_name in SHOP_ITEMS
+	return npc_name in shop_items

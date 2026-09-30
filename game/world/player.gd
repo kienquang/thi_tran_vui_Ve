@@ -31,6 +31,17 @@ func _ready():
 	
 	# Gán font tiếng Việt cho nút Về lại Nhân Vật
 	reset_cam_btn.add_font_override("font", npc_board_font)
+	UIUtils.style_button(reset_cam_btn)
+	
+	# Định vị lại nút Về lại Nhân Vật ra giữa màn hình phía trên cùng để không đè lên các menu God Mode
+	reset_cam_btn.anchor_left = 0.5
+	reset_cam_btn.anchor_right = 0.5
+	reset_cam_btn.anchor_top = 0.0
+	reset_cam_btn.anchor_bottom = 0.0
+	reset_cam_btn.margin_left = -80
+	reset_cam_btn.margin_right = 80
+	reset_cam_btn.margin_top = 20
+	reset_cam_btn.margin_bottom = 52
 	
 	# Thiết lập giới hạn màn hình bằng cách đọc kích thước map
 	var bg_map = get_node_or_null("/root/World/BackgroundMap")
@@ -119,6 +130,7 @@ func _init_npc_board():
 	btn.rect_position = Vector2(130, -38)
 	btn.rect_min_size = Vector2(130, 32)
 	btn.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn)
 	btn.connect("pressed", self, "_on_npc_board_toggle")
 	ui_canvas.add_child(btn)
 	
@@ -174,6 +186,24 @@ func _init_god_mode_ui():
 	god_mode_vbox.add_constant_override("separation", 10)
 	ui_canvas.add_child(god_mode_vbox)
 
+	var weather_opt = OptionButton.new()
+	weather_opt.name = "WeatherOption"
+	weather_opt.rect_min_size = Vector2(160, 32)
+	weather_opt.add_font_override("font", npc_board_font)
+	weather_opt.add_item("Nắng ráo", 0)
+	weather_opt.add_item("Mưa rào", 1)
+	weather_opt.add_item("Bão tố", 2)
+	weather_opt.add_item("Tuyết rơi", 3)
+	weather_opt.add_item("Sương mù", 4)
+	
+	var current_idx = ["SUNNY", "RAIN", "STORM", "SNOW", "FOG"].find(TimeManager.current_weather)
+	if current_idx != -1:
+		weather_opt.selected = current_idx
+		
+	UIUtils.style_option_button(weather_opt)
+	weather_opt.connect("item_selected", self, "_on_weather_selected")
+	god_mode_vbox.add_child(weather_opt)
+
 	# Nút bật/tắt bảng sự kiện
 	var event_toggle_btn = Button.new()
 	event_toggle_btn.text = "Su Kien Thi Tran"
@@ -183,25 +213,50 @@ func _init_god_mode_ui():
 	event_toggle_btn.connect("pressed", self, "_on_event_panel_toggle")
 	god_mode_vbox.add_child(event_toggle_btn)
 	
+	# Nhóm điều khiển cài đặt (nằm ở góc dưới cùng bên phải)
+	var settings_vbox = VBoxContainer.new()
+	settings_vbox.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	settings_vbox.rect_position = Vector2(-150, -130)
+	settings_vbox.add_constant_override("separation", 10)
+	ui_canvas.add_child(settings_vbox)
+	
+	var audio_options = VBoxContainer.new()
+	audio_options.name = "AudioOptions"
+	audio_options.hide()
+	settings_vbox.add_child(audio_options)
+	
+	var btn_bgm = Button.new()
+	btn_bgm.name = "BtnBGM"
+	btn_bgm.text = "🎵 Tắt Nhạc"
+	btn_bgm.rect_min_size = Vector2(130, 32)
+	btn_bgm.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_bgm)
+	btn_bgm.connect("pressed", self, "_on_toggle_bgm")
+	audio_options.add_child(btn_bgm)
+	
+	var btn_sfx = Button.new()
+	btn_sfx.name = "BtnSFX"
+	btn_sfx.text = "🔊 Tắt SFX"
+	btn_sfx.rect_min_size = Vector2(130, 32)
+	btn_sfx.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_sfx)
+	btn_sfx.connect("pressed", self, "_on_toggle_sfx")
+	audio_options.add_child(btn_sfx)
+	
+	var btn_settings = Button.new()
+	btn_settings.text = "⚙️ Cài Đặt"
+	btn_settings.rect_min_size = Vector2(130, 32)
+	btn_settings.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_settings)
+	btn_settings.connect("pressed", self, "_on_settings_toggle")
+	settings_vbox.add_child(btn_settings)
+	
 	# Bảng Sự Kiện
 	var event_panel = VBoxContainer.new()
 	event_panel.name = "EventControls"
 	event_panel.add_constant_override("separation", 4)
 	event_panel.hide()
 	god_mode_vbox.add_child(event_panel)
-
-	var weather_opt = OptionButton.new()
-	weather_opt.name = "WeatherOption"
-	weather_opt.rect_min_size = Vector2(160, 32)
-	weather_opt.add_font_override("font", npc_board_font)
-	weather_opt.add_item("Nang rao", 0)
-	weather_opt.add_item("Mua rao", 1)
-	weather_opt.add_item("Bao to", 2)
-	weather_opt.add_item("Tuyet roi", 3)
-	weather_opt.add_item("Suong mu", 4)
-	UIUtils.style_button(weather_opt, Color(0.18, 0.32, 0.52))
-	weather_opt.connect("item_selected", self, "_on_weather_selected")
-	god_mode_vbox.add_child(weather_opt)
 
 	btn_electric = Button.new()
 	btn_electric.text = "⚡ Cắt Điện"
@@ -228,8 +283,25 @@ func _on_weather_selected(idx: int):
 	var weather_states = ["SUNNY", "RAIN", "STORM", "SNOW", "FOG"]
 	TimeManager.change_weather(weather_states[idx])
 
+func _on_toggle_bgm():
+	AudioManager.toggle_bgm()
+	var btn = $UICanvas.find_node("BtnBGM", true, false)
+	if btn:
+		btn.text = "🎵 Bật Nhạc" if AudioManager.is_bgm_muted else "🎵 Tắt Nhạc"
+
+func _on_toggle_sfx():
+	AudioManager.toggle_sfx()
+	var btn = $UICanvas.find_node("BtnSFX", true, false)
+	if btn:
+		btn.text = "🔊 Bật SFX" if AudioManager.is_sfx_muted else "🔊 Tắt SFX"
+
+func _on_settings_toggle():
+	var opts = $UICanvas.find_node("AudioOptions", true, false)
+	if opts:
+		opts.visible = !opts.visible
+
 func _on_event_panel_toggle():
-	var controls = $UICanvas/EventControls
+	var controls = $UICanvas.find_node("EventControls", true, false)
 	if controls:
 		controls.visible = !controls.visible
 
@@ -259,9 +331,10 @@ func _toggle_event(type: String):
 
 func _on_npc_board_toggle():
 	var board = $UICanvas/NPCBoard
-	var controls = $UICanvas/EventControls
+	var controls = $UICanvas.find_node("EventControls", true, false)
 	board.visible = !board.visible
-	controls.visible = board.visible
+	if controls:
+		controls.visible = board.visible
 	if board.visible:
 		update_npc_board()
 
@@ -326,6 +399,7 @@ func _physics_process(delta):
 	# ... Logic di chuyển cũ giữ nguyên
 	if ChatUI.panel.visible:
 		velocity = Vector2.ZERO
+		AudioManager.stop_footstep()
 		update_animation(delta)
 	else:
 		var input_vector = Vector2.ZERO
@@ -335,6 +409,11 @@ func _physics_process(delta):
 		
 		velocity = input_vector * move_speed
 		velocity = move_and_slide(velocity)
+		# Play footstep sound when moving
+		if velocity.length() > 0:
+			AudioManager.play_footstep()
+		else:
+			AudioManager.stop_footstep()
 		
 		update_animation(delta)
 		

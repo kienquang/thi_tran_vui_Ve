@@ -126,6 +126,11 @@ func _on_quest_accept():
 	current_npc.receive_message("Toi da nhan nhiem vu cua ban.")
 
 func _on_quest_decline():
+	if current_npc != null and current_npc.pending_quest != null:
+		var q = current_npc.pending_quest
+		if q.has("type") and q["type"] == QuestManager.QuestType.FETCH_ITEM:
+			QuestManager.remove_dynamic_shop_item(q["shop_owner"], q["required_item"])
+		current_npc.clear_pending_quest()
 	_clear_extra_buttons()
 	chat_history.bbcode_text += "\n[color=#AAAAAA]Ban da tu choi nhiem vu."
 	line_edit.grab_focus()
@@ -181,6 +186,8 @@ func _on_buy_input(text: String):
 		return
 	if player.spend_coins(item["price"]):
 		player.add_item(item["name"], 1)
+		if item["name"] == "Ca Phe Sua":
+			AudioManager.play_coffee()
 		chat_history.bbcode_text += "\n[color=#AAFFAA]Mua thanh cong: " + item["display"] + "! Con lai: " + str(player.coins) + " xu[/color]"
 		WorldLog.add_entry("Player mua " + item["display"] + " tu " + current_npc.npc_name)
 	else:

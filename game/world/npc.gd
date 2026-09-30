@@ -134,6 +134,20 @@ func _ready():
 	
 	add_child(name_label)
 	
+	var emote_label = Label.new()
+	emote_label.name = "EmoteLabel"
+	var emote_font = DynamicFont.new()
+	emote_font.font_data = load("res://assets/ARIAL.TTF")
+	emote_font.size = 28
+	emote_font.use_filter = true
+	emote_label.add_font_override("font", emote_font)
+	emote_label.align = Label.ALIGN_CENTER
+	emote_label.valign = Label.ALIGN_CENTER
+	emote_label.rect_min_size = Vector2(160, 48)
+	emote_label.rect_position = Vector2(-80, -115) # above name label
+	add_child(emote_label)
+	update_emoticon()
+	
 	if not llm_client.is_connected("response_received", self, "_on_llm_response"):
 		llm_client.connect("response_received", self, "_on_llm_response")
 	
@@ -151,6 +165,15 @@ func update_name_label():
 	var lbl = get_node_or_null("NameLabel")
 	if lbl:
 		lbl.text = npc_name
+
+func update_emoticon():
+	var label = get_node_or_null("EmoteLabel")
+	if label:
+		match current_state:
+			State.IDLE: label.text = "❤️"
+			State.CRYING: label.text = "😠"
+			State.TALKING: label.text = "💬"
+			_: label.text = ""
 
 func _disable_npc_collisions():
 	for n in get_tree().get_nodes_in_group("npcs"):
@@ -343,6 +366,7 @@ func _process(delta):
 				add_personal_log("Đã có người chơi đến an ủi tôi, tôi cảm thấy đỡ hơn một chút.")
 			
 			current_state = State.TALKING
+			update_emoticon()
 			velocity = Vector2.ZERO
 			ChatUI.open_chat(self)
 			
@@ -396,6 +420,7 @@ func _on_body_entered(body):
 		if current_state != State.TALKING:
 			if current_state != State.CRYING:
 				current_state = State.WAITING_FOR_PLAYER
+				update_emoticon()
 			velocity = Vector2.ZERO
 			update_animation(0)
 			prompt_label.show()
@@ -419,7 +444,9 @@ func initiate_npc_chat(other_npc):
 	other_npc.npc_cooldown = 45.0
 	
 	current_state = State.TALKING
+	update_emoticon()
 	other_npc.current_state = State.TALKING
+	other_npc.update_emoticon()
 	velocity = Vector2.ZERO
 	other_npc.velocity = Vector2.ZERO
 	
@@ -437,6 +464,7 @@ func initiate_npc_chat(other_npc):
 
 func receive_npc_message(text: String, sender_npc):
 	current_state = State.TALKING
+	update_emoticon()
 	velocity = Vector2.ZERO
 	if is_instance_valid(sender_npc):
 		face_target(sender_npc.global_position)
@@ -465,8 +493,17 @@ func _on_world_event_received(event_desc: String):
 	
 	if "cúp điện" in event_desc.to_lower() or "mất điện" in event_desc.to_lower():
 		add_personal_log("Mất điện rồi! Tôi phải chạy ra Sảnh Trung Tâm (Công viên) xem tình hình thế nào.")
-		# Phân tán ngẫu nhiên xung quanh khu vực (2959, 1843) đến (3035, 2935)
 		schedule[TimeManager.game_hour] = "town_square" 
+		update_schedule(TimeManager.game_hour, true)
+	elif "lễ" in event_desc.to_lower() or "hội" in event_desc.to_lower() or "chợ" in event_desc.to_lower():
+		add_personal_log("Hôm nay có " + event_desc + ", tôi sẽ ra công viên chơi cả ngày!")
+		for h in schedule.keys():
+			schedule[h] = "town_square"
+		update_schedule(TimeManager.game_hour, true)
+	elif "nghỉ" in event_desc.to_lower() or "tết" in event_desc.to_lower():
+		add_personal_log("Hôm nay là " + event_desc + ", tôi sẽ ở nhà nghỉ ngơi.")
+		for h in schedule.keys():
+			schedule[h] = "home"
 		update_schedule(TimeManager.game_hour, true)
 	elif randf() > 0.5:
 		var loc = "town_hall" if randf() > 0.5 else "town_square"
@@ -487,6 +524,7 @@ func _on_llm_response(action: String, text_output: String):
 			# Giải thoát khỏi trạng thái khóc lóc
 			if current_state == State.CRYING:
 				current_state = State.WAITING_FOR_PLAYER
+				update_emoticon()
 				
 		speech_bubble.show_text(final_text)
 		add_personal_log("Tôi đã trả lời Player: " + final_text)
@@ -520,6 +558,7 @@ func _on_llm_response(action: String, text_output: String):
 func end_chat():
 	if player_near:
 		current_state = State.WAITING_FOR_PLAYER
+		update_emoticon()
 		prompt_label.show()
 	else:
 		start_idle_routine()
@@ -548,6 +587,7 @@ func start_idle_routine():
 		return # Không tự ý rời khỏi trạng thái khóc lóc
 		
 	current_state = State.IDLE
+	update_emoticon()
 	var wait_time = 3.0
 	if TimeManager.current_weather == "RAIN" or TimeManager.current_weather == "STORM":
 		wait_time = 0.5 
@@ -557,6 +597,7 @@ func start_idle_routine():
 		# Neu dang co quest cho player hoac player dang lam quest tu NPC nay => dung cho
 		if pending_quest != null or QuestManager.has_active_from(npc_name):
 			current_state = State.IDLE
+			update_emoticon()
 			return
 		
 		# Tu dong tao quest voi xac suat 15%
@@ -577,6 +618,7 @@ func start_idle_routine():
 		else:
 			set_random_target()
 			current_state = State.WALKING
+			update_emoticon()
 
 func _trigger_random_drama():
 	var dramas = ["crying", "fight", "ask_out", "steal"]
@@ -586,6 +628,7 @@ func _trigger_random_drama():
 		var reasons = ["bị rớt mất ví tiền", "nhớ người yêu cũ", "bị mất chiếc nhẫn kỷ niệm", "làm rơi cái bánh kem"]
 		var reason = reasons[randi() % reasons.size()]
 		current_state = State.CRYING
+		update_emoticon()
 		velocity = Vector2.ZERO
 		var event_str = "Tôi đang đứng khóc nức nở vì " + reason + "."
 		add_personal_log(event_str)
@@ -615,6 +658,7 @@ func _trigger_random_drama():
 				
 		set_random_target()
 		current_state = State.WALKING
+		update_emoticon()
 
 func set_random_target():
 	var random_x = rand_range(-80.0, 80.0)
@@ -660,20 +704,42 @@ func generate_system_prompt() -> String:
 		
 	return prompt
 
+func get_global_quest_count() -> int:
+	var count = QuestManager.get_active_count()
+	for n in get_tree().get_nodes_in_group("npcs"):
+		if n.pending_quest != null:
+			count += 1
+	return count
+
 func _generate_quest():
-	# Shop NPC khong tao quest
 	if QuestManager.is_shop(npc_name):
 		return
+		
+	if get_global_quest_count() >= 3:
+		return
+		
 	quest_gen_cooldown = 90.0
 	var roll = randf()
-	if roll < 0.5:
-		var shop_items = QuestManager.get_shop_items("Tieu thuong Anna")
-		if shop_items.size() > 0:
-			var item = shop_items[randi() % shop_items.size()]
-			var reward = int(item["price"] * 1.5 + rand_range(5, 15))
-			pending_quest = QuestManager.make_fetch_quest(npc_name, item["name"], "Tieu thuong Anna", reward)
-			_show_quest_indicator()
-			WorldLog.add_entry(npc_name + " co nhiem vu can nguoi giup do! (!)")
+	if roll < 0.6:
+		var item_pool = [
+			{"name": "Sach Cu", "price": 25, "display": "Sách Cũ", "shop": "Tiểu thương Anna"},
+			{"name": "Day Chuyen", "price": 50, "display": "Dây Chuyền", "shop": "Tiểu thương Anna"},
+			{"name": "Vo Oc", "price": 30, "display": "Vỏ Ốc", "shop": "Tiểu thương Anna"},
+			{"name": "Banh Mi", "price": 15, "display": "Bánh Mì", "shop": "Pha chế David"},
+			{"name": "Sinh To", "price": 20, "display": "Sinh Tố", "shop": "Pha chế David"},
+			{"name": "Trai Tao", "price": 10, "display": "Trái Táo", "shop": "Tiểu thương Anna"},
+			{"name": "Banh Ngot", "price": 18, "display": "Bánh Ngọt", "shop": "Pha chế David"},
+			{"name": "Nam Rung", "price": 20, "display": "Nấm Rừng", "shop": "Tiểu thương Anna"}
+		]
+		
+		var item = item_pool[randi() % item_pool.size()]
+		var reward = int(item["price"] * 1.5 + rand_range(5, 15))
+		
+		QuestManager.add_dynamic_shop_item(item["shop"], {"name": item["name"], "price": item["price"], "display": item["display"]})
+		
+		pending_quest = QuestManager.make_fetch_quest(npc_name, item["name"], item["shop"], reward)
+		_show_quest_indicator()
+		WorldLog.add_entry(npc_name + " có việc cần nhờ! (!)")
 	else:
 		var all_npcs = get_tree().get_nodes_in_group("npcs")
 		var candidates = []
@@ -685,7 +751,7 @@ func _generate_quest():
 			var reward = int(rand_range(20, 50))
 			pending_quest = QuestManager.make_deliver_quest(npc_name, target, reward)
 			_show_quest_indicator()
-			WorldLog.add_entry(npc_name + " co nhiem vu can nguoi giup do! (!)")
+			WorldLog.add_entry(npc_name + " có việc cần nhờ! (!)")
 
 func _show_quest_indicator():
 	if quest_indicator == null:

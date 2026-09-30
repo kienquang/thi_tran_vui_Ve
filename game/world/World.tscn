@@ -328,7 +328,7 @@ __meta__ = {
 }
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ObstaclePoly3/ObstaclePoly7"]
-polygon = PoolVector2Array( -309, -232, 177, -230, 180, -122, 260, -124, 258, 289, 59, 280, 57, 169, -132, 169, -130, 276, -246, 278, -248, 171, -172, 173, -177, -91, -320, -91 )
+polygon = PoolVector2Array( -287, -212, 177, -230, 180, -122, 215, -62, 217, 201, 86, 234, 52, 191, -127, 194, -142, 196, -164, 189, -169, 181, -172, 173, -177, -91, -286, -115 )
 
 [node name="ObstaclePoly" parent="ObstaclePoly3" instance=ExtResource( 8 )]
 position = Vector2( 3427, -494 )
