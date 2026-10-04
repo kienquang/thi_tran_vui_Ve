@@ -21,7 +21,9 @@ func _ready():
 	panel.add_stylebox_override("panel", style)
 	
 	$Panel/Title.add_font_override("font", font)
+	$Panel/Title.add_color_override("font_color", Color(0.9, 0.9, 0.9))
 	log_label.add_font_override("normal_font", font)
+	log_label.add_color_override("default_color", Color(0.8, 0.8, 0.8))
 	
 	panel.hide()
 	WorldLog.connect("log_added", self, "_on_log_added")
@@ -33,7 +35,7 @@ func _ready():
 	btn_toggle.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	btn_toggle.rect_position = Vector2(10, -38)
 	btn_toggle.rect_min_size = Vector2(110, 32)
-	UIUtils.style_button(btn_toggle, Color(0.25, 0.38, 0.60))
+	UIUtils.style_button(btn_toggle)
 	btn_toggle.connect("pressed", self, "_on_toggle_btn_pressed")
 	add_child(btn_toggle)
 

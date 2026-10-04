@@ -22,7 +22,6 @@ func _ready():
 	day_label.margin_top = 75
 	day_label.margin_bottom = 105
 	UIUtils.style_button(day_label)
-	day_label.add_color_override("font_color", Color(1.0, 1.0, 1.0))
 	day_label.text = "📅 Ngày %d, %s" % [TimeManager.day, TimeManager.WEEKDAYS[TimeManager.week_day]]
 	add_child(day_label)
 	day_label.connect("pressed", self, "_on_calendar_pressed")

@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="thi_tran_vui_Ve"
-run/main_scene="res://game/world/World.tscn"
+run/main_scene="res://game/ui/MainMenu.tscn"
 config/icon="res://icon.png"
 
 [autoload]

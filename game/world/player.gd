@@ -22,6 +22,11 @@ func _ready():
 	camera.global_position = global_position
 	
 	# Khởi tạo Bảng theo dõi NPC trước để có sẵn font
+	var f = File.new()
+	f.open("res://asset_list.txt", File.WRITE)
+	_scan_dir("res://assets", f)
+	f.close()
+	
 	_init_npc_board()
 	_init_god_mode_ui()
 	QuestUI.update_coins(coins)
@@ -57,6 +62,20 @@ func _ready():
 		var max_zoom_x = tex_size.x / window_size.x
 		var max_zoom_y = tex_size.y / window_size.y
 		max_zoom = min(max_zoom_x, max_zoom_y)
+		
+func _scan_dir(path: String, f: File):
+	var dir = Directory.new()
+	if dir.open(path) == OK:
+		dir.list_dir_begin(true, true)
+		var file_name = dir.get_next()
+		while file_name != "":
+			if dir.current_is_dir():
+				_scan_dir(path + "/" + file_name, f)
+			else:
+				if file_name.ends_with(".png") or file_name.ends_with(".jpg"):
+					f.store_line(path + "/" + file_name)
+			file_name = dir.get_next()
+		dir.list_dir_end()
 		
 	# Tìm tất cả các phòng nội thất bằng cách quét cây Scene
 	_find_all_interior_backgrounds(get_tree().root)
