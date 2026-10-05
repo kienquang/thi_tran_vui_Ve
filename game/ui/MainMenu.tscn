@@ -36,38 +36,47 @@ alignment = 1
 
 [node name="Label" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 margin_left = 93.0
-margin_top = 68.0
+margin_top = 37.0
 margin_right = 493.0
-margin_bottom = 128.0
+margin_bottom = 97.0
 rect_min_size = Vector2( 400, 60 )
 size_flags_horizontal = 4
 text = "THỊ TRẤN VUI VẺ"
 align = 1
 valign = 1
 
-[node name="StartButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+[node name="ContinueButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 margin_left = 168.0
-margin_top = 143.0
+margin_top = 112.0
 margin_right = 418.0
-margin_bottom = 191.0
+margin_bottom = 160.0
 rect_min_size = Vector2( 250, 48 )
 size_flags_horizontal = 4
-text = "Bắt đầu Game"
+text = "Tiếp tục"
+
+[node name="StartButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+margin_left = 168.0
+margin_top = 175.0
+margin_right = 418.0
+margin_bottom = 223.0
+rect_min_size = Vector2( 250, 48 )
+size_flags_horizontal = 4
+text = "Chơi mới"
 
 [node name="SettingsButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 margin_left = 168.0
-margin_top = 206.0
+margin_top = 238.0
 margin_right = 418.0
-margin_bottom = 254.0
+margin_bottom = 286.0
 rect_min_size = Vector2( 250, 48 )
 size_flags_horizontal = 4
 text = "Cài đặt"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 margin_left = 168.0
-margin_top = 269.0
+margin_top = 301.0
 margin_right = 418.0
-margin_bottom = 317.0
+margin_bottom = 349.0
 rect_min_size = Vector2( 250, 48 )
 size_flags_horizontal = 4
 text = "Thoát"

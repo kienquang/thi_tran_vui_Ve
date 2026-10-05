@@ -84,10 +84,10 @@ static func style_option_button(opt: OptionButton):
 	if panel_tex:
 		panel = StyleBoxTexture.new()
 		panel.texture = panel_tex
-		panel.margin_left = 12
-		panel.margin_right = 12
-		panel.margin_top = 12
-		panel.margin_bottom = 12
+		panel.margin_left = 24
+		panel.margin_right = 24
+		panel.margin_top = 48
+		panel.margin_bottom = 24
 	else:
 		panel = StyleBoxFlat.new()
 		panel.bg_color = Color(0.12, 0.12, 0.14, 0.95)

@@ -12,17 +12,25 @@ func _ready():
 	$CenterContainer/Panel/VBoxContainer/Label.add_font_override("font", title_font)
 	$CenterContainer/Panel/VBoxContainer/Label.add_color_override("font_color", Color(0.25, 0.15, 0.05))
 	
+	var continue_btn = $CenterContainer/Panel/VBoxContainer/ContinueButton
 	var start_btn = $CenterContainer/Panel/VBoxContainer/StartButton
 	var settings_btn = $CenterContainer/Panel/VBoxContainer/SettingsButton
 	var quit_btn = $CenterContainer/Panel/VBoxContainer/QuitButton
 	
+	continue_btn.add_font_override("font", btn_font)
 	start_btn.add_font_override("font", btn_font)
 	settings_btn.add_font_override("font", btn_font)
 	quit_btn.add_font_override("font", btn_font)
 	
+	continue_btn.connect("pressed", self, "_on_continue_pressed")
 	start_btn.connect("pressed", self, "_on_start_pressed")
 	settings_btn.connect("pressed", self, "_on_settings_pressed")
 	quit_btn.connect("pressed", self, "_on_quit_pressed")
+	
+	if SaveManager.has_save():
+		continue_btn.show()
+	else:
+		continue_btn.hide()
 	
 	# Cập nhật tên game
 	$CenterContainer/Panel/VBoxContainer/Label.text = "THỊ TRẤN BẤT ỔN"
@@ -65,7 +73,7 @@ func _ready():
 		var pressed_style = btn_style.duplicate()
 		pressed_style.modulate_color = Color(0.8, 0.8, 0.8) # Tối đi khi ấn
 		
-		for btn in [start_btn, settings_btn, quit_btn]:
+		for btn in [continue_btn, start_btn, settings_btn, quit_btn]:
 			btn.add_stylebox_override("normal", btn_style)
 			btn.add_stylebox_override("hover", hover_style)
 			btn.add_stylebox_override("pressed", pressed_style)
@@ -78,11 +86,28 @@ func _ready():
 	JournalUI.offset = Vector2(9999, 9999)
 	ChatUI.offset = Vector2(9999, 9999)
 
-func _on_start_pressed():
-	# Hiện lại giao diện khi vào game
+func _on_continue_pressed():
 	QuestUI.offset = Vector2(0, 0)
 	JournalUI.offset = Vector2(0, 0)
 	ChatUI.offset = Vector2(0, 0)
+	SaveManager.load_requested = true
+	get_tree().change_scene("res://game/world/World.tscn")
+
+func _on_start_pressed():
+	# Xóa save cũ đi và reset
+	SaveManager.delete_save()
+	
+	QuestUI.offset = Vector2(0, 0)
+	JournalUI.offset = Vector2(0, 0)
+	ChatUI.offset = Vector2(0, 0)
+	
+	# Reset singletons
+	QuestManager.active_quests.clear()
+	QuestManager.completed_quests.clear()
+	TimeManager.day = 1
+	TimeManager.week_day = 0
+	TimeManager.calendar_events.clear()
+	
 	get_tree().change_scene("res://game/world/World.tscn")
 
 func _on_settings_pressed():

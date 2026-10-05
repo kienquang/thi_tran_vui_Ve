@@ -33,6 +33,7 @@ JournalUI="*res://game/ui/JournalUI.tscn"
 QuestManager="*res://game/world/quest_manager.gd"
 QuestUI="*res://game/ui/QuestUI.tscn"
 AudioManager="*res://game/world/AudioManager.gd"
+SaveManager="*res://game/world/SaveManager.gd"
 
 [gui]
 

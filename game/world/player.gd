@@ -63,6 +63,12 @@ func _ready():
 		var max_zoom_y = tex_size.y / window_size.y
 		max_zoom = min(max_zoom_x, max_zoom_y)
 		
+	if SaveManager.load_requested:
+		SaveManager.apply_save_data()
+	else:
+		# Nếu là game mới, lưu ngay trạng thái ban đầu
+		SaveManager.save_game()
+		
 func _scan_dir(path: String, f: File):
 	var dir = Directory.new()
 	if dir.open(path) == OK:
@@ -235,7 +241,10 @@ func _init_god_mode_ui():
 	# Nhóm điều khiển cài đặt (nằm ở góc dưới cùng bên phải)
 	var settings_vbox = VBoxContainer.new()
 	settings_vbox.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	settings_vbox.rect_position = Vector2(-150, -130)
+	settings_vbox.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	settings_vbox.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	settings_vbox.margin_right = -20
+	settings_vbox.margin_bottom = -20
 	settings_vbox.add_constant_override("separation", 10)
 	ui_canvas.add_child(settings_vbox)
 	
@@ -261,6 +270,15 @@ func _init_god_mode_ui():
 	UIUtils.style_button(btn_sfx)
 	btn_sfx.connect("pressed", self, "_on_toggle_sfx")
 	audio_options.add_child(btn_sfx)
+	
+	var btn_save = Button.new()
+	btn_save.name = "BtnSave"
+	btn_save.text = "💾 Lưu Game"
+	btn_save.rect_min_size = Vector2(130, 32)
+	btn_save.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_save)
+	btn_save.connect("pressed", SaveManager, "save_game")
+	audio_options.add_child(btn_save)
 	
 	var btn_settings = Button.new()
 	btn_settings.text = "⚙️ Cài Đặt"

@@ -14,16 +14,16 @@ func _ready():
 	day_label = Button.new()
 	day_label.name = "DayButton"
 	day_label.add_font_override("font", _make_font(18))
-	day_label.align = Label.ALIGN_RIGHT
 	day_label.anchor_left = 1.0
 	day_label.anchor_right = 1.0
-	day_label.margin_left = -250
+	day_label.margin_left = -220
 	day_label.margin_right = -20
 	day_label.margin_top = 75
 	day_label.margin_bottom = 105
 	UIUtils.style_button(day_label)
 	day_label.text = "📅 Ngày %d, %s" % [TimeManager.day, TimeManager.WEEKDAYS[TimeManager.week_day]]
 	add_child(day_label)
+	move_child(day_label, 0)
 	day_label.connect("pressed", self, "_on_calendar_pressed")
 	TimeManager.connect("day_changed", self, "_on_day_changed")
 	
