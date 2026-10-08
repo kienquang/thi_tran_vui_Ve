@@ -473,7 +473,7 @@ polygon = PoolVector2Array( -43, -567, -33, 576, 534, 586, 531, 464, 407, 464, 4
 
 [node name="Door" parent="ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 602, 547 )
-target_position = Vector2( 2063, 3102 )
+target_position = Vector2( 1829, 940 )
 
 [node name="ObstaclePoly" parent="ObstaclePoly4/CollisionPolygon2D2" instance=ExtResource( 8 )]
 position = Vector2( -3332, 1186 )
@@ -523,7 +523,7 @@ polygon = PoolVector2Array( -211, -938, -182, 148, 365, 103, 310, -105, 208, -17
 
 [node name="Door" parent="ObstaclePoly4/ObstaclePoly5/CollisionPolygon2D2" instance=ExtResource( 7 )]
 position = Vector2( 445, 43 )
-target_position = Vector2( 1067, 2535 )
+target_position = Vector2( 2006, 1908 )
 
 [node name="ObstaclePoly6" parent="ObstaclePoly4" instance=ExtResource( 8 )]
 position = Vector2( 318, 2928 )

@@ -63,10 +63,10 @@ func _ready():
 		var max_zoom_y = tex_size.y / window_size.y
 		max_zoom = min(max_zoom_x, max_zoom_y)
 		
-	if SaveManager.load_requested:
+	if SaveManager.has_save():
 		SaveManager.apply_save_data()
 	else:
-		# Nếu là game mới, lưu ngay trạng thái ban đầu
+		# Nếu là game mới (chưa có save), lưu ngay trạng thái ban đầu
 		SaveManager.save_game()
 		
 func _scan_dir(path: String, f: File):
@@ -150,7 +150,7 @@ func _init_npc_board():
 	npc_board_font.size = 14
 	
 	var btn = Button.new()
-	btn.text = "Lich Trinh NPC"
+	btn.text = "Lịch Trình NPC"
 	btn.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	btn.rect_position = Vector2(130, -38)
 	btn.rect_min_size = Vector2(130, 32)
@@ -231,7 +231,7 @@ func _init_god_mode_ui():
 
 	# Nút bật/tắt bảng sự kiện
 	var event_toggle_btn = Button.new()
-	event_toggle_btn.text = "Su Kien Thi Tran"
+	event_toggle_btn.text = "Sự Kiện Thị Trấn"
 	event_toggle_btn.rect_min_size = Vector2(160, 32)
 	event_toggle_btn.add_font_override("font", npc_board_font)
 	UIUtils.style_button(event_toggle_btn, Color(0.22, 0.42, 0.28))
@@ -277,7 +277,7 @@ func _init_god_mode_ui():
 	btn_save.rect_min_size = Vector2(130, 32)
 	btn_save.add_font_override("font", npc_board_font)
 	UIUtils.style_button(btn_save)
-	btn_save.connect("pressed", SaveManager, "save_game")
+	btn_save.connect("pressed", self, "_on_save_game_pressed", [btn_save])
 	audio_options.add_child(btn_save)
 	
 	var btn_settings = Button.new()
@@ -331,6 +331,14 @@ func _on_toggle_sfx():
 	var btn = $UICanvas.find_node("BtnSFX", true, false)
 	if btn:
 		btn.text = "🔊 Bật SFX" if AudioManager.is_sfx_muted else "🔊 Tắt SFX"
+
+func _on_save_game_pressed(btn: Button):
+	SaveManager.save_game()
+	if btn:
+		btn.text = "Đã lưu!"
+		yield(get_tree().create_timer(1.0), "timeout")
+		if btn:
+			btn.text = "💾 Lưu Game"
 
 func _on_settings_toggle():
 	var opts = $UICanvas.find_node("AudioOptions", true, false)

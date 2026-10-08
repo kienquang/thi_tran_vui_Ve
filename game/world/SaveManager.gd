@@ -61,9 +61,6 @@ func load_game_data() -> Dictionary:
 	return {}
 
 func apply_save_data():
-	if not load_requested:
-		return
-		
 	var data = load_game_data()
 	if data.empty():
 		return

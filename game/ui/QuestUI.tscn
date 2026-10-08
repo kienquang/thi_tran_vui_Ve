@@ -9,56 +9,86 @@ script = ExtResource( 1 )
 [node name="CoinsLabel" type="Label" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -160.0
+margin_left = -230.0
 margin_top = 8.0
 margin_right = -10.0
 margin_bottom = 30.0
 text = "Xu: 0"
 align = 2
 
-[node name="ToggleBtn" type="Button" parent="."]
+[node name="QuestBtn" type="Button" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -160.0
+margin_left = -230.0
+margin_top = 34.0
+margin_right = -122.0
+margin_bottom = 66.0
+text = "Nhiệm Vụ"
+
+[node name="InvBtn" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -118.0
 margin_top = 34.0
 margin_right = -10.0
-margin_bottom = 62.0
-text = "Nhiem Vu / Tui Do"
+margin_bottom = 66.0
+text = "Túi Đồ"
 
-[node name="Panel" type="Panel" parent="."]
+[node name="QuestPanel" type="Panel" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -340.0
-margin_top = 68.0
+margin_top = 110.0
 margin_right = -10.0
-margin_bottom = 560.0
+margin_bottom = 450.0
 
-[node name="Scroll" type="ScrollContainer" parent="Panel"]
+[node name="Scroll" type="ScrollContainer" parent="QuestPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 4.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -16.0
+margin_bottom = -16.0
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Scroll"]
+[node name="VBox" type="VBoxContainer" parent="QuestPanel/Scroll"]
 size_flags_horizontal = 3
 custom_constants/separation = 6
 
-[node name="HdrQuest" type="Label" parent="Panel/Scroll/VBox"]
-text = "--- NHIEM VU ---"
+[node name="HdrQuest" type="Label" parent="QuestPanel/Scroll/VBox"]
+text = "--- NHIỆM VỤ ---"
 align = 1
 
-[node name="QuestList" type="VBoxContainer" parent="Panel/Scroll/VBox"]
+[node name="QuestList" type="VBoxContainer" parent="QuestPanel/Scroll/VBox"]
 
-[node name="HdrDone" type="Label" parent="Panel/Scroll/VBox"]
-text = "--- DA XONG ---"
+[node name="HdrDone" type="Label" parent="QuestPanel/Scroll/VBox"]
+text = "--- ĐÃ XONG ---"
 align = 1
 
-[node name="DoneList" type="VBoxContainer" parent="Panel/Scroll/VBox"]
+[node name="DoneList" type="VBoxContainer" parent="QuestPanel/Scroll/VBox"]
 
-[node name="HdrInv" type="Label" parent="Panel/Scroll/VBox"]
-text = "--- TUI DO ---"
+
+[node name="InvPanel" type="Panel" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -340.0
+margin_top = 110.0
+margin_right = -10.0
+margin_bottom = 450.0
+
+[node name="Scroll" type="ScrollContainer" parent="InvPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -16.0
+margin_bottom = -16.0
+
+[node name="VBox" type="VBoxContainer" parent="InvPanel/Scroll"]
+size_flags_horizontal = 3
+custom_constants/separation = 6
+
+[node name="HdrInv" type="Label" parent="InvPanel/Scroll/VBox"]
+text = "--- TÚI ĐỒ ---"
 align = 1
 
-[node name="InvList" type="VBoxContainer" parent="Panel/Scroll/VBox"]
+[node name="InvList" type="VBoxContainer" parent="InvPanel/Scroll/VBox"]

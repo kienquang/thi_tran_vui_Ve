@@ -30,7 +30,7 @@ func _ready():
 	update_log_display()
 	
 	var btn_toggle = Button.new()
-	btn_toggle.text = "Nhat Ky"
+	btn_toggle.text = "Nhật Ký"
 	btn_toggle.add_font_override("font", font)
 	btn_toggle.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	btn_toggle.rect_position = Vector2(10, -38)
