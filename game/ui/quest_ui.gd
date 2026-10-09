@@ -49,12 +49,12 @@ func _ready():
 	inv_panel.add_stylebox_override("panel", style)
 	
 	$QuestPanel/Scroll.margin_left = 35
-	$QuestPanel/Scroll.margin_top = 45
+	$QuestPanel/Scroll.margin_top = 60
 	$QuestPanel/Scroll.margin_right = -35
 	$QuestPanel/Scroll.margin_bottom = -35
 	
 	$InvPanel/Scroll.margin_left = 35
-	$InvPanel/Scroll.margin_top = 45
+	$InvPanel/Scroll.margin_top = 60
 	$InvPanel/Scroll.margin_right = -35
 	$InvPanel/Scroll.margin_bottom = -35
 	
@@ -67,14 +67,14 @@ func _ready():
 	coins_lbl.text = "Xu: 0"
 	
 	var hdr_color = Color(0.2, 0.1, 0.05)
-	$QuestPanel/Scroll/VBox/HdrQuest.add_color_override("font_color", hdr_color)
-	$QuestPanel/Scroll/VBox/HdrQuest.add_font_override("font", font_hd)
+	$QuestPanel/HdrQuest.add_color_override("font_color", hdr_color)
+	$QuestPanel/HdrQuest.add_font_override("font", font_hd)
 	
 	$QuestPanel/Scroll/VBox/HdrDone.add_color_override("font_color", hdr_color)
 	$QuestPanel/Scroll/VBox/HdrDone.add_font_override("font", font_hd)
 	
-	$InvPanel/Scroll/VBox/HdrInv.add_color_override("font_color", hdr_color)
-	$InvPanel/Scroll/VBox/HdrInv.add_font_override("font", font_hd)
+	$InvPanel/HdrInv.add_color_override("font_color", hdr_color)
+	$InvPanel/HdrInv.add_font_override("font", font_hd)
 	
 	quest_btn.add_font_override("font", font_btn)
 	inv_btn.add_font_override("font", font_btn)
@@ -139,7 +139,7 @@ func _draw_quests():
 	for c in done_container.get_children():
 		c.queue_free()
 	
-	$QuestPanel/Scroll/VBox/HdrQuest.show()
+	$QuestPanel/HdrQuest.show()
 	if not QuestManager.active_quests.empty():
 		for q in QuestManager.active_quests:
 			var rtl = RichTextLabel.new()
@@ -195,7 +195,7 @@ func _draw_inventory(inv: Dictionary):
 	for c in inv_container.get_children():
 		c.queue_free()
 	
-	$InvPanel/Scroll/VBox/HdrInv.show()
+	$InvPanel/HdrInv.show()
 	if inv.empty():
 		return
 	

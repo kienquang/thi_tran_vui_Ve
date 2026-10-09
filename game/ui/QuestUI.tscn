@@ -54,7 +54,9 @@ margin_bottom = -16.0
 size_flags_horizontal = 3
 custom_constants/separation = 6
 
-[node name="HdrQuest" type="Label" parent="QuestPanel/Scroll/VBox"]
+[node name="HdrQuest" type="Label" parent="QuestPanel"]
+anchor_right = 1.0
+margin_top = 22.0
 text = "--- NHIỆM VỤ ---"
 align = 1
 
@@ -87,7 +89,9 @@ margin_bottom = -16.0
 size_flags_horizontal = 3
 custom_constants/separation = 6
 
-[node name="HdrInv" type="Label" parent="InvPanel/Scroll/VBox"]
+[node name="HdrInv" type="Label" parent="InvPanel"]
+anchor_right = 1.0
+margin_top = 22.0
 text = "--- TÚI ĐỒ ---"
 align = 1
 
