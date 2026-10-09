@@ -63,6 +63,9 @@ func _ready():
 		var max_zoom_y = tex_size.y / window_size.y
 		max_zoom = min(max_zoom_x, max_zoom_y)
 		
+	var mc = load("res://game/ui/mobile_controls.gd").new()
+	add_child(mc)
+		
 	if SaveManager.has_save():
 		SaveManager.apply_save_data()
 	else:
