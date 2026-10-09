@@ -101,7 +101,9 @@ func _ready():
 		"personality": npc_personality,
 		"relationships": {},
 		"history_logs": [],
-		"heart_level": 5
+		"heart_level": 0,
+		"talk_count": 0,
+		"last_talk_day": -1
 	}
 	
 	if npc_sprite != null:
@@ -483,6 +485,21 @@ func receive_message(text: String):
 	chat_partner = null
 	speech_bubble.show_text("...")
 	
+	# Logic tăng tình cảm khi nói chuyện
+	var last_day = npc_memory.get("last_talk_day", -1)
+	if last_day != TimeManager.day:
+		npc_memory["last_talk_day"] = TimeManager.day
+		var count = npc_memory.get("talk_count", 0) + 1
+		npc_memory["talk_count"] = count
+		
+		# Cần 3 ngày nói chuyện để tăng 1 trái tim
+		if count >= 3:
+			npc_memory["talk_count"] = 0
+			var hearts = npc_memory.get("heart_level", 0)
+			if hearts < 5:
+				npc_memory["heart_level"] = hearts + 1
+				ChatUI.open_chat(self) # Cập nhật lại UI tình cảm ngay lập tức
+	
 	var prompt = generate_system_prompt()
 	add_personal_log("Player nói: " + text)
 	WorldLog.add_entry("Player nói với " + npc_name + ": " + text)
@@ -696,6 +713,37 @@ func generate_system_prompt() -> String:
 		prompt += "Ký ức gần đây của bạn:\n"
 		for entry in npc_memory["history_logs"]:
 			prompt += "- " + entry + "\n"
+			
+	var hearts = npc_memory.get("heart_level", 0)
+	if hearts >= 2:
+		prompt += "BÍ MẬT THỊ TRẤN ĐƯỢC MỞ KHÓA (Tùy chọn chia sẻ nếu có ngữ cảnh phù hợp):\n"
+		if npc_name == "Thị trưởng Thomas":
+			if hearts >= 2: prompt += "- Ngân quỹ thị trấn tháng trước thâm hụt là do tôi lỡ mua mô hình siêu nhân bản giới hạn.\n"
+			if hearts >= 4: prompt += "- Tôi bị hói và đang đội tóc giả 20 năm nay rồi! Cấm nói ai biết!\n"
+		elif npc_name == "Alice":
+			if hearts >= 2: prompt += "- Dạo này tôi thấy bóng người lạ mặt hay đứng lén nhìn quanh bến tàu lúc nửa đêm.\n"
+			if hearts >= 4: prompt += "- Chồng tôi, bác sĩ John, thực ra rất sợ kim tiêm!\n"
+		elif npc_name == "Bác sĩ John":
+			if hearts >= 2: prompt += "- Lọ thuốc 'Bổ não' tôi hay bán cho mọi người thực ra chỉ là nước đường pha siro dâu thôi.\n"
+			if hearts >= 4: prompt += "- Tôi từng thấy Thị trưởng lén lút mang một bức tượng vàng giấu xuống hầm thị trấn!\n"
+		elif npc_name == "Thợ mộc Bob":
+			if hearts >= 2: prompt += "- Gỗ ở rừng phía Tây dạo này hay phát ra tiếng khóc lóc lúc nửa đêm.\n"
+			if hearts >= 4: prompt += "- Mary vợ tôi nấu ăn siêu dở, tôi toàn lén đổ đi cho chó ăn ròi khen ngon.\n"
+		elif npc_name == "Thủ thư Mary":
+			if hearts >= 2: prompt += "- Trong thư viện có một cuốn sách phép thuật cổ bị giấu sau kệ số 4.\n"
+			if hearts >= 4: prompt += "- Chồng tôi (Bob) lén giấu quỹ đen dưới sàn xưởng mộc, tôi biết tỏng nhưng cứ để đấy.\n"
+		elif npc_name == "Tiểu thương Anna":
+			if hearts >= 2: prompt += "- Mấy trái táo tôi bán toàn là đi nhặt ở vườn hoang đấy, vốn 0 đồng hehe.\n"
+			if hearts >= 4: prompt += "- David ở quán cafe từng tỏ tình với tôi trước khi cưới Sarah!\n"
+		elif npc_name == "Thủy thủ Jack":
+			if hearts >= 2: prompt += "- Dưới đáy biển gần bến tàu có xác một con tàu hải tặc, tôi từng vớt được đồng tiền vàng.\n"
+			if hearts >= 4: prompt += "- Tôi biết bơi đâu, 30 năm đi biển toàn mặc áo phao ngầm trong áo khoác đấy.\n"
+		elif npc_name == "Pha chế David":
+			if hearts >= 2: prompt += "- Công thức cà phê đặc biệt của quán thực ra... có pha thêm nước mắm cho đậm đà.\n"
+			if hearts >= 4: prompt += "- Hồi xưa tôi từng thích Anna, nhưng Sarah mới là chân ái đời tôi.\n"
+		elif npc_name == "Kiến trúc sư Sarah":
+			if hearts >= 2: prompt += "- Bản vẽ quy hoạch thị trấn có một đường hầm bí mật thông từ nhà Thị trưởng ra ngoài.\n"
+			if hearts >= 4: prompt += "- Tôi biết David từng thích Anna, nhưng tôi đã 'chiêu dụ' anh ấy bằng tài nghệ làm bánh của mình.\n"
 			
 	prompt += "Hãy nhập vai và trả lời tự nhiên, ngắn gọn bằng tiếng Việt dưới 20 từ. "
 	

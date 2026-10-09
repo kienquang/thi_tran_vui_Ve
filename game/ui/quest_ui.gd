@@ -48,6 +48,16 @@ func _ready():
 	quest_panel.add_stylebox_override("panel", style)
 	inv_panel.add_stylebox_override("panel", style)
 	
+	$QuestPanel/Scroll.margin_left = 35
+	$QuestPanel/Scroll.margin_top = 45
+	$QuestPanel/Scroll.margin_right = -35
+	$QuestPanel/Scroll.margin_bottom = -35
+	
+	$InvPanel/Scroll.margin_left = 35
+	$InvPanel/Scroll.margin_top = 45
+	$InvPanel/Scroll.margin_right = -35
+	$InvPanel/Scroll.margin_bottom = -35
+	
 	var font_hd = _make_font(18)
 	var font_btn = _make_font(16)
 	

@@ -10,6 +10,8 @@ func save_game():
 	save_data["TimeManager"] = {
 		"day": TimeManager.day,
 		"week_day": TimeManager.week_day,
+		"game_hour": TimeManager.game_hour,
+		"game_minute": TimeManager.game_minute,
 		"current_weather": TimeManager.current_weather,
 		"events": TimeManager.calendar_events
 	}
@@ -69,6 +71,8 @@ func apply_save_data():
 		var t = data["TimeManager"]
 		TimeManager.day = int(t.get("day", 1))
 		TimeManager.week_day = int(t.get("week_day", 0))
+		TimeManager.game_hour = int(t.get("game_hour", 6))
+		TimeManager.game_minute = int(t.get("game_minute", 0))
 		TimeManager.current_weather = str(t.get("current_weather", "SUNNY"))
 		# Khôi phục events, json lưu key thành String nên cần parse lại thành int
 		TimeManager.calendar_events.clear()
@@ -97,6 +101,7 @@ func apply_save_data():
 	
 	# Cập nhật lại UI thời gian
 	TimeManager.emit_signal("day_changed", TimeManager.day, TimeManager.WEEKDAYS[TimeManager.week_day])
+	TimeManager.emit_signal("time_changed", TimeManager.game_hour, TimeManager.game_minute)
 	TimeManager.emit_signal("weather_changed", TimeManager.current_weather)
 
 func delete_save():

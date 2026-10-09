@@ -46,9 +46,19 @@ func _on_time_changed(hour, minute):
 func open_chat(npc_node):
 	current_npc = npc_node
 	panel.show()
-	chat_history.bbcode_text = "[color=#FFFF88][" + current_npc.npc_name + "][/color]\n"
+	
+	var hearts = current_npc.npc_memory.get("heart_level", 0)
+	var heart_str = ""
+	for i in range(5):
+		if i < hearts:
+			heart_str += "[color=#ff3333]♥[/color] "
+		else:
+			heart_str += "[color=#555555]♥[/color] "
+			
+	chat_history.bbcode_text = "[color=#FFFF88][" + current_npc.npc_name + "][/color] - Độ thân thiết: " + heart_str + "\n"
 	line_edit.text = ""
 	_clear_extra_buttons()
+	_show_gift_button()
 	
 	# Danh dau progress quest DELIVER
 	QuestManager.mark_npc_talked(npc_node.npc_name)
@@ -107,6 +117,72 @@ func _show_shop_button():
 	btn_shop.rect_size = Vector2(190, 32)
 	panel.add_child(btn_shop)
 	extra_buttons.append(btn_shop)
+
+var current_gift_popup = null
+
+func _show_gift_button():
+	var btn_gift = _make_btn("🎁 Tặng Quà", Color(0.7, 0.3, 0.5), "_on_gift_open")
+	btn_gift.rect_position = Vector2(450, 303)
+	btn_gift.rect_size = Vector2(120, 32)
+	panel.add_child(btn_gift)
+	extra_buttons.append(btn_gift)
+	
+	current_gift_popup = PopupMenu.new()
+	var f = DynamicFont.new()
+	f.font_data = load("res://assets/ARIAL.TTF")
+	f.size = 14
+	current_gift_popup.add_font_override("font", f)
+	current_gift_popup.connect("id_pressed", self, "_on_gift_selected")
+	btn_gift.add_child(current_gift_popup)
+
+func _on_gift_open():
+	var player = get_tree().root.get_node_or_null("World/YSort/Player")
+	if player == null or player.inventory.empty():
+		chat_history.bbcode_text += "\n[color=#FF5555]Túi đồ của bạn không có gì để tặng![/color]"
+		return
+		
+	current_gift_popup.clear()
+	var idx = 0
+	for item in player.inventory:
+		current_gift_popup.add_item(item["name"] + " (x" + str(item["amount"]) + ")", idx)
+		idx += 1
+		
+	current_gift_popup.popup(Rect2(get_viewport().get_mouse_position(), Vector2(150, 100)))
+
+func _on_gift_selected(id: int):
+	var player = get_tree().root.get_node_or_null("World/YSort/Player")
+	if player == null or id >= player.inventory.size(): return
+	
+	var item = player.inventory[id]
+	var item_name = item["name"]
+	
+	# Trừ đồ trong túi
+	item["amount"] -= 1
+	if item["amount"] <= 0:
+		player.inventory.remove(id)
+	QuestUI.refresh_inventory(player.inventory)
+	
+	# Tăng tình cảm
+	var hearts = current_npc.npc_memory.get("heart_level", 0)
+	if hearts < 5:
+		current_npc.npc_memory["heart_level"] = hearts + 1
+		hearts += 1
+		
+	# Update lại dòng tình cảm ở trên
+	var heart_str = ""
+	for i in range(5):
+		if i < hearts:
+			heart_str += "[color=#ff3333]♥[/color] "
+		else:
+			heart_str += "[color=#555555]♥[/color] "
+			
+	var lines = chat_history.bbcode_text.split("\n")
+	if lines.size() > 0:
+		lines[0] = "[color=#FFFF88][" + current_npc.npc_name + "][/color] - Độ thân thiết: " + heart_str
+		chat_history.bbcode_text = lines.join("\n")
+		
+	chat_history.bbcode_text += "\n[color=#FFAAFF]Bạn đã tặng " + item_name + " cho " + current_npc.npc_name + "![/color]"
+	chat_history.bbcode_text += "\n[color=#FFFF88]" + current_npc.npc_name + ": \"Ôi cảm ơn bạn nhiều nhé! Mình rất thích món quà này!\"[/color]"
 
 func _make_btn(txt: String, color: Color, cb: String) -> Button:
 	var btn = Button.new()
