@@ -30,7 +30,7 @@ shape = SubResource( 1 )
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 zoom = Vector2( 0.8, 0.8 )
-smoothing_enabled = true
+smoothing_enabled = false
 
 [node name="Rain" type="CPUParticles2D" parent="."]
 position = Vector2( 0, -300 )

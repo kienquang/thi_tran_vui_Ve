@@ -11,6 +11,24 @@ var bgm_player: AudioStreamPlayer = null
 
 var is_bgm_muted: bool = false
 var is_sfx_muted: bool = false
+var bgm_volume: float = 1.0
+var sfx_volume: float = 1.0
+
+func set_bgm_volume(val: float):
+	bgm_volume = clamp(val, 0.0, 1.0)
+	if bgm_player:
+		if bgm_volume <= 0.001:
+			bgm_player.volume_db = -80.0
+		else:
+			bgm_player.volume_db = linear2db(bgm_volume) - 12.0
+
+func set_sfx_volume(val: float):
+	sfx_volume = clamp(val, 0.0, 1.0)
+	var base_db = -80.0 if sfx_volume <= 0.001 else linear2db(sfx_volume)
+	if footstep_player: footstep_player.volume_db = base_db - 5.0
+	if rain_player: rain_player.volume_db = base_db - 10.0
+	if coffee_player: coffee_player.volume_db = base_db - 8.0
+	if birds_player: birds_player.volume_db = base_db - 8.0
 
 func _ready():
     # Initialize AudioStreamPlayers

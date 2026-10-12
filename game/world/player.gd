@@ -57,11 +57,11 @@ func _ready():
 		camera.limit_right = int(tex_size.x)
 		camera.limit_bottom = int(tex_size.y)
 		
-		# Tính toán mức zoom lớn nhất không được vượt quá bản đồ
+		# Tính toán mức zoom lớn nhất không được vượt quá bản đồ (tối thiểu 3.0 để luôn zoom xa được)
 		var window_size = get_viewport_rect().size
 		var max_zoom_x = tex_size.x / window_size.x
 		var max_zoom_y = tex_size.y / window_size.y
-		max_zoom = min(max_zoom_x, max_zoom_y)
+		max_zoom = max(min(max_zoom_x, max_zoom_y), 3.0)
 		
 	var mc = load("res://game/ui/mobile_controls.gd").new()
 	add_child(mc)
@@ -516,7 +516,7 @@ func _physics_process(delta):
 			camera.limit_top = int(limit_t)
 			camera.limit_right = int(limit_r)
 			camera.limit_bottom = int(limit_b)
-			target_zoom_vec = Vector2(tz, tz)
+			target_zoom_vec = desired_zoom
 				
 
 	else:
@@ -539,12 +539,12 @@ func _physics_process(delta):
 					camera.limit_right = 10000000
 					camera.limit_bottom = 10000000
 			
-	# Luôn luôn áp dụng mượt zoom dù ở chế độ nào
-	camera.zoom = camera.zoom.linear_interpolate(target_zoom_vec, 5.0 * delta)
+	# Luôn luôn áp dụng mượt zoom dù ở chế độ nào (lerp nhanh hơn để không bị khựng)
+	camera.zoom = camera.zoom.linear_interpolate(target_zoom_vec, 12.0 * delta)
 	
 	# Xử lý nội suy di chuyển Camera
 	if camera_mode == "FOLLOW":
-		camera.global_position = camera.global_position.linear_interpolate(global_position, 10.0 * delta)
+		camera.global_position = camera.global_position.linear_interpolate(global_position, 12.0 * delta)
 
 # Hàm xử lý thay đổi frame của sprite sheet
 func update_animation(delta):
@@ -565,18 +565,39 @@ func update_animation(delta):
 		
 	sprite.frame = current_dir * 4 + frame_index
 
-func _unhandled_input(event):
+func _is_mouse_over_scroll_ui() -> bool:
+	var m_pos = get_viewport().get_mouse_position()
+	if ChatUI.panel.visible and ChatUI.panel.get_global_rect().has_point(m_pos):
+		return true
+	var qp = QuestUI.get_node_or_null("QuestPanel")
+	if qp and qp.visible and qp.get_global_rect().has_point(m_pos):
+		return true
+	var ip = QuestUI.get_node_or_null("InvPanel")
+	if ip and ip.visible and ip.get_global_rect().has_point(m_pos):
+		return true
+	var jp = JournalUI.get_node_or_null("Panel")
+	if jp and jp.visible and jp.get_global_rect().has_point(m_pos):
+		return true
+	var nb = $UICanvas.get_node_or_null("NPCBoard")
+	if nb and nb.visible and nb.get_global_rect().has_point(m_pos):
+		return true
+	return false
+
+func _input(event):
 	if event is InputEventMouseButton:
-		# Zoom to nhỏ
-		if event.button_index == BUTTON_WHEEL_UP:
-			desired_zoom -= Vector2(0.2, 0.2)
-		elif event.button_index == BUTTON_WHEEL_DOWN:
-			desired_zoom += Vector2(0.2, 0.2)
+		# Zoom to nhỏ mượt mà, chỉ nhận khi event.pressed == true để không bị kích hoạt 2 lần
+		if event.pressed:
+			if event.button_index == BUTTON_WHEEL_UP or event.button_index == BUTTON_WHEEL_DOWN:
+				# Nếu chuột đang nằm trong các bảng danh sách cuộn thì để cho bảng đó cuộn
+				if not _is_mouse_over_scroll_ui():
+					if event.button_index == BUTTON_WHEEL_UP:
+						desired_zoom -= Vector2(0.1, 0.1)
+					elif event.button_index == BUTTON_WHEEL_DOWN:
+						desired_zoom += Vector2(0.1, 0.1)
+					
+					desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+					desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
 			
-		# Nới lỏng giới hạn zoom lên mức tối đa vừa khít bản đồ
-		desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
-		desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
-		
 		# Nhấn giữ Chuột Phải hoặc Chuột Giữa để di chuyển Camera
 		if event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_MIDDLE:
 			is_panning = event.pressed
@@ -601,6 +622,12 @@ func _update_room_visibility(active_bg: Node):
 	current_active_bg = active_bg
 	
 	var in_room = (active_bg != null)
+	if in_room and active_bg is Sprite and active_bg.texture != null:
+		var window_size = get_viewport_rect().size
+		var tex_size = active_bg.texture.get_size()
+		var tz = max(tex_size.x / window_size.x, tex_size.y / window_size.y)
+		tz = max(tz, 0.4)
+		desired_zoom = Vector2(tz, tz)
 	
 	for bg in interior_backgrounds:
 		if is_instance_valid(bg):

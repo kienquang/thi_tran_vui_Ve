@@ -17,6 +17,7 @@ func _ready():
 	left_area.set_anchors_preset(Control.PRESET_WIDE)
 	left_area.anchor_right = 0.5
 	left_area.margin_right = 0
+	left_area.mouse_filter = Control.MOUSE_FILTER_PASS
 	left_area.connect("gui_input", self, "_on_left_area_input")
 	add_child(left_area)
 	
@@ -132,6 +133,8 @@ func _reset_joystick():
 	_update_actions()
 
 func _on_interact_down():
+	if ChatUI.panel.visible:
+		return
 	var ev = InputEventAction.new()
 	ev.action = "interact"
 	ev.pressed = true

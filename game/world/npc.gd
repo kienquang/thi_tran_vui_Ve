@@ -231,8 +231,8 @@ func update_schedule(hour, force_update = false):
 				entrance_door_pos = Vector2.ZERO
 				
 			base_wander_position = final_destination
-			# KHONG di chuyen khi dang co quest active hoac pending quest
-			if pending_quest != null or QuestManager.has_active_from(npc_name):
+			# KHONG di chuyen khi dang co quest active, pending quest hoac dang noi chuyen
+			if pending_quest != null or QuestManager.has_active_from(npc_name) or current_state == State.TALKING:
 				return
 			reevaluate_path()
 			current_state = State.WALKING
@@ -359,7 +359,7 @@ func _process(delta):
 	if quest_gen_cooldown > 0:
 		quest_gen_cooldown -= delta
 
-	if player_near and Input.is_action_just_pressed("interact"):
+	if not ChatUI.panel.visible and player_near and Input.is_action_just_pressed("interact"):
 		if current_state != State.TALKING:
 			face_target(player_node.global_position)
 			prompt_label.hide()

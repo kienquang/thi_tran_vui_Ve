@@ -86,6 +86,140 @@ func _ready():
 	JournalUI.offset = Vector2(9999, 9999)
 	ChatUI.offset = Vector2(9999, 9999)
 
+	_init_settings_panel()
+
+var settings_panel: PanelContainer
+var bgm_lbl: Label
+var sfx_lbl: Label
+var btn_mute_bgm: Button
+var btn_mute_sfx: Button
+
+func _init_settings_panel():
+	var btn_font = DynamicFont.new()
+	btn_font.font_data = load("res://assets/ARIAL.TTF")
+	btn_font.size = 15
+	
+	var title_font = DynamicFont.new()
+	title_font.font_data = load("res://assets/VT323-Regular.ttf")
+	title_font.size = 32
+
+	settings_panel = PanelContainer.new()
+	settings_panel.rect_min_size = Vector2(460, 360)
+	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
+	settings_panel.margin_left = -230
+	settings_panel.margin_top = -180
+	settings_panel.margin_right = 230
+	settings_panel.margin_bottom = 180
+	
+	var panel_tex = load("res://assets/others/formal_dialog_panel_base_v1_1024x640.png")
+	if panel_tex:
+		var style = StyleBoxTexture.new()
+		style.texture = panel_tex
+		style.margin_left = 40
+		style.margin_right = 40
+		style.margin_top = 40
+		style.margin_bottom = 40
+		settings_panel.add_stylebox_override("panel", style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_constant_override("separation", 12)
+	settings_panel.add_child(vbox)
+	
+	var lbl_title = Label.new()
+	lbl_title.text = "CÀI ĐẶT ÂM THANH"
+	lbl_title.align = Label.ALIGN_CENTER
+	lbl_title.add_font_override("font", title_font)
+	lbl_title.add_color_override("font_color", Color(0.25, 0.15, 0.05))
+	vbox.add_child(lbl_title)
+	
+	# BGM Slider
+	bgm_lbl = Label.new()
+	bgm_lbl.text = "Âm lượng Nhạc nền: %d%%" % int(AudioManager.bgm_volume * 100)
+	bgm_lbl.add_font_override("font", btn_font)
+	bgm_lbl.add_color_override("font_color", Color(0.2, 0.15, 0.1))
+	vbox.add_child(bgm_lbl)
+	
+	var bgm_slider = HSlider.new()
+	bgm_slider.min_value = 0
+	bgm_slider.max_value = 100
+	bgm_slider.step = 1
+	bgm_slider.value = AudioManager.bgm_volume * 100
+	bgm_slider.connect("value_changed", self, "_on_bgm_slider_changed")
+	vbox.add_child(bgm_slider)
+	
+	# SFX Slider
+	sfx_lbl = Label.new()
+	sfx_lbl.text = "Âm lượng Hiệu ứng (SFX): %d%%" % int(AudioManager.sfx_volume * 100)
+	sfx_lbl.add_font_override("font", btn_font)
+	sfx_lbl.add_color_override("font_color", Color(0.2, 0.15, 0.1))
+	vbox.add_child(sfx_lbl)
+	
+	var sfx_slider = HSlider.new()
+	sfx_slider.min_value = 0
+	sfx_slider.max_value = 100
+	sfx_slider.step = 1
+	sfx_slider.value = AudioManager.sfx_volume * 100
+	sfx_slider.connect("value_changed", self, "_on_sfx_slider_changed")
+	vbox.add_child(sfx_slider)
+	
+	var hbox_toggles = HBoxContainer.new()
+	hbox_toggles.add_constant_override("separation", 10)
+	hbox_toggles.alignment = BoxContainer.ALIGN_CENTER
+	vbox.add_child(hbox_toggles)
+	
+	btn_mute_bgm = Button.new()
+	btn_mute_bgm.text = "Bật/Tắt Nhạc"
+	btn_mute_bgm.rect_min_size = Vector2(140, 36)
+	btn_mute_bgm.add_font_override("font", btn_font)
+	UIUtils.style_button(btn_mute_bgm, Color(0.2, 0.45, 0.25))
+	btn_mute_bgm.connect("pressed", self, "_on_toggle_bgm_pressed")
+	hbox_toggles.add_child(btn_mute_bgm)
+	
+	btn_mute_sfx = Button.new()
+	btn_mute_sfx.text = "Bật/Tắt SFX"
+	btn_mute_sfx.rect_min_size = Vector2(140, 36)
+	btn_mute_sfx.add_font_override("font", btn_font)
+	UIUtils.style_button(btn_mute_sfx, Color(0.25, 0.35, 0.5))
+	btn_mute_sfx.connect("pressed", self, "_on_toggle_sfx_pressed")
+	hbox_toggles.add_child(btn_mute_sfx)
+	
+	var btn_close = Button.new()
+	btn_close.text = "Đóng"
+	btn_close.rect_min_size = Vector2(160, 38)
+	btn_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	btn_close.add_font_override("font", btn_font)
+	UIUtils.style_button(btn_close, Color(0.5, 0.2, 0.2))
+	btn_close.connect("pressed", self, "_on_settings_close_pressed")
+	vbox.add_child(btn_close)
+	
+	settings_panel.hide()
+	add_child(settings_panel)
+
+func _on_bgm_slider_changed(val: float):
+	AudioManager.set_bgm_volume(val / 100.0)
+	bgm_lbl.text = "Âm lượng Nhạc nền: %d%%" % int(val)
+
+func _on_sfx_slider_changed(val: float):
+	AudioManager.set_sfx_volume(val / 100.0)
+	sfx_lbl.text = "Âm lượng Hiệu ứng (SFX): %d%%" % int(val)
+
+func _on_toggle_bgm_pressed():
+	AudioManager.toggle_bgm()
+	if AudioManager.is_bgm_muted:
+		btn_mute_bgm.text = "🔇 Đã tắt Nhạc"
+	else:
+		btn_mute_bgm.text = "🎵 Đang bật Nhạc"
+
+func _on_toggle_sfx_pressed():
+	AudioManager.toggle_sfx()
+	if AudioManager.is_sfx_muted:
+		btn_mute_sfx.text = "🔇 Đã tắt SFX"
+	else:
+		btn_mute_sfx.text = "🔊 Đang bật SFX"
+
+func _on_settings_close_pressed():
+	settings_panel.hide()
+
 func _on_continue_pressed():
 	QuestUI.offset = Vector2(0, 0)
 	JournalUI.offset = Vector2(0, 0)
@@ -111,8 +245,7 @@ func _on_start_pressed():
 	get_tree().change_scene("res://game/world/World.tscn")
 
 func _on_settings_pressed():
-	# Hiển thị UI Cài đặt (ví dụ bật/tắt âm thanh)
-	print("Settings clicked")
+	settings_panel.show()
 
 func _on_quit_pressed():
 	get_tree().quit()

@@ -44,6 +44,9 @@ func _on_time_changed(hour, minute):
 	time_label.text = "%02d:%02d" % [hour, minute]
 
 func open_chat(npc_node):
+	if panel.visible and current_npc == npc_node:
+		return # Đang chat với chính NPC này, không reset ô nhập!
+		
 	current_npc = npc_node
 	panel.show()
 	
@@ -143,24 +146,28 @@ func _on_gift_open():
 		
 	current_gift_popup.clear()
 	var idx = 0
-	for item in player.inventory:
-		current_gift_popup.add_item(item["name"] + " (x" + str(item["amount"]) + ")", idx)
-		idx += 1
+	for item_name in player.inventory.keys():
+		var count = player.inventory[item_name]
+		if count > 0:
+			current_gift_popup.add_item(item_name + " (x" + str(count) + ")", idx)
+			current_gift_popup.set_item_metadata(idx, item_name)
+			idx += 1
+			
+	if idx == 0:
+		chat_history.bbcode_text += "\n[color=#FF5555]Túi đồ của bạn không có gì để tặng![/color]"
+		return
 		
 	current_gift_popup.popup(Rect2(get_viewport().get_mouse_position(), Vector2(150, 100)))
 
 func _on_gift_selected(id: int):
 	var player = get_tree().root.get_node_or_null("World/YSort/Player")
-	if player == null or id >= player.inventory.size(): return
+	if player == null: return
 	
-	var item = player.inventory[id]
-	var item_name = item["name"]
+	var item_name = current_gift_popup.get_item_metadata(id)
+	if item_name == null or not player.inventory.has(item_name): return
 	
-	# Trừ đồ trong túi
-	item["amount"] -= 1
-	if item["amount"] <= 0:
-		player.inventory.remove(id)
-	QuestUI.refresh_inventory(player.inventory)
+	# Trừ đồ trong túi bằng hàm của Player (an toàn với Dictionary)
+	player.remove_item(item_name, 1)
 	
 	# Tăng tình cảm
 	var hearts = current_npc.npc_memory.get("heart_level", 0)
