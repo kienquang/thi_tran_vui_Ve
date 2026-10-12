@@ -91,23 +91,33 @@ func update_lighting(delta):
 	if canvas_mod != null:
 		var target_color = Color(1.0, 1.0, 1.0) # Sáng sớm / Trưa
 		
-		if game_hour >= 17 and game_hour < 19:
-			target_color = Color(0.8, 0.5, 0.3) # Hoàng hôn (Cam)
-		elif game_hour >= 19 or game_hour < 6:
-			target_color = Color(0.2, 0.2, 0.4) # Đêm (Xanh thẫm)
+		# Kiểm tra xem player có đang ở trong nhà không
+		var player = get_node_or_null("/root/World/YSort/Player")
+		var player_in_room = false
+		if player != null and "current_active_bg" in player and player.current_active_bg != null:
+			player_in_room = true
 			
-		# Pha màu tùy theo thời tiết
-		if current_weather == "RAIN":
-			target_color = target_color.linear_interpolate(Color(0.5, 0.6, 0.7), 0.5)
-		elif current_weather == "STORM":
-			target_color = target_color.linear_interpolate(Color(0.2, 0.2, 0.3), 0.8)
-		elif current_weather == "SNOW":
-			target_color = target_color.linear_interpolate(Color(0.8, 0.9, 1.0), 0.3)
-		elif current_weather == "FOG":
-			target_color = target_color.linear_interpolate(Color(0.7, 0.7, 0.7), 0.6)
+		if player_in_room:
+			# Trong nhà luôn có đèn điện sáng sủa, ấm cúng
+			target_color = Color(1.0, 0.98, 0.94)
+		else:
+			if game_hour >= 17 and game_hour < 19:
+				target_color = Color(0.85, 0.65, 0.45) # Hoàng hôn (Cam ấm)
+			elif game_hour >= 19 or game_hour < 6:
+				target_color = Color(0.48, 0.50, 0.68) # Đêm trăng sáng (Xanh dịu, nhìn rõ đường xá và nhân vật)
+				
+			# Pha màu tùy theo thời tiết ngoài trời
+			if current_weather == "RAIN":
+				target_color = target_color.linear_interpolate(Color(0.55, 0.62, 0.72), 0.35)
+			elif current_weather == "STORM":
+				target_color = target_color.linear_interpolate(Color(0.40, 0.42, 0.52), 0.45)
+			elif current_weather == "SNOW":
+				target_color = target_color.linear_interpolate(Color(0.85, 0.92, 1.0), 0.3)
+			elif current_weather == "FOG":
+				target_color = target_color.linear_interpolate(Color(0.72, 0.72, 0.75), 0.5)
 			
 		# Chuyển màu mượt mà
-		canvas_mod.color = canvas_mod.color.linear_interpolate(target_color, delta * 0.5)
+		canvas_mod.color = canvas_mod.color.linear_interpolate(target_color, delta * 1.5)
 
 func get_time_string() -> String:
 	return "%02d:%02d" % [game_hour, game_minute]
