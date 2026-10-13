@@ -33,7 +33,12 @@ func teleport_body(body):
 		if target_node != null and target_node is Node2D:
 			final_pos = target_node.global_position
 			
-	# Dịch chuyển
+	# Nếu là Player và có hiệu ứng chuyển cảnh mượt mà
+	if body.name == "Player" and body.has_method("teleport_with_fade"):
+		body.teleport_with_fade(final_pos)
+		return
+		
+	# Dịch chuyển tức thời cho NPC
 	body.global_position = final_pos
 	
 	# Nếu là NPC, tính lại đường đi

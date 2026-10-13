@@ -17,14 +17,24 @@ func _ready():
 	var settings_btn = $CenterContainer/Panel/VBoxContainer/SettingsButton
 	var quit_btn = $CenterContainer/Panel/VBoxContainer/QuitButton
 	
+	var guide_btn = Button.new()
+	guide_btn.name = "GuideButton"
+	guide_btn.text = "Hướng dẫn"
+	guide_btn.rect_min_size = Vector2(250, 44)
+	guide_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	$CenterContainer/Panel/VBoxContainer.add_child(guide_btn)
+	$CenterContainer/Panel/VBoxContainer.move_child(guide_btn, quit_btn.get_index())
+	
 	continue_btn.add_font_override("font", btn_font)
 	start_btn.add_font_override("font", btn_font)
 	settings_btn.add_font_override("font", btn_font)
+	guide_btn.add_font_override("font", btn_font)
 	quit_btn.add_font_override("font", btn_font)
 	
 	continue_btn.connect("pressed", self, "_on_continue_pressed")
 	start_btn.connect("pressed", self, "_on_start_pressed")
 	settings_btn.connect("pressed", self, "_on_settings_pressed")
+	guide_btn.connect("pressed", self, "_on_guide_pressed")
 	quit_btn.connect("pressed", self, "_on_quit_pressed")
 	
 	if SaveManager.has_save():
@@ -73,7 +83,7 @@ func _ready():
 		var pressed_style = btn_style.duplicate()
 		pressed_style.modulate_color = Color(0.8, 0.8, 0.8) # Tối đi khi ấn
 		
-		for btn in [continue_btn, start_btn, settings_btn, quit_btn]:
+		for btn in [continue_btn, start_btn, settings_btn, guide_btn, quit_btn]:
 			btn.add_stylebox_override("normal", btn_style)
 			btn.add_stylebox_override("hover", hover_style)
 			btn.add_stylebox_override("pressed", pressed_style)
@@ -87,12 +97,31 @@ func _ready():
 	ChatUI.offset = Vector2(9999, 9999)
 
 	_init_settings_panel()
+	_init_guide_panel()
+	_init_menu_fade()
 
 var settings_panel: PanelContainer
+var guide_panel: PanelContainer
 var bgm_lbl: Label
 var sfx_lbl: Label
 var btn_mute_bgm: Button
 var btn_mute_sfx: Button
+var menu_fade: ColorRect
+var menu_tween: Tween
+var is_transitioning: bool = false
+
+func _init_menu_fade():
+	menu_fade = ColorRect.new()
+	menu_fade.name = "MenuFade"
+	menu_fade.set_anchors_preset(Control.PRESET_WIDE)
+	menu_fade.color = Color(0, 0, 0, 1.0)
+	menu_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(menu_fade)
+	
+	menu_tween = Tween.new()
+	add_child(menu_tween)
+	menu_tween.interpolate_property(menu_fade, "color:a", 1.0, 0.0, 0.45, Tween.TRANS_SINE, Tween.EASE_OUT)
+	menu_tween.start()
 
 func _init_settings_panel():
 	var btn_font = DynamicFont.new()
@@ -104,21 +133,25 @@ func _init_settings_panel():
 	title_font.size = 32
 
 	settings_panel = PanelContainer.new()
-	settings_panel.rect_min_size = Vector2(460, 360)
+	settings_panel.rect_min_size = Vector2(540, 420)
 	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
-	settings_panel.margin_left = -230
-	settings_panel.margin_top = -180
-	settings_panel.margin_right = 230
-	settings_panel.margin_bottom = 180
+	settings_panel.margin_left = -270
+	settings_panel.margin_top = -210
+	settings_panel.margin_right = 270
+	settings_panel.margin_bottom = 210
 	
 	var panel_tex = load("res://assets/others/formal_dialog_panel_base_v1_1024x640.png")
 	if panel_tex:
 		var style = StyleBoxTexture.new()
 		style.texture = panel_tex
-		style.margin_left = 40
-		style.margin_right = 40
+		style.margin_left = 45
+		style.margin_right = 45
 		style.margin_top = 40
 		style.margin_bottom = 40
+		style.content_margin_left = 80
+		style.content_margin_right = 80
+		style.content_margin_top = 78
+		style.content_margin_bottom = 64
 		settings_panel.add_stylebox_override("panel", style)
 	
 	var vbox = VBoxContainer.new()
@@ -217,23 +250,111 @@ func _on_toggle_sfx_pressed():
 	else:
 		btn_mute_sfx.text = "🔊 Đang bật SFX"
 
+func _init_guide_panel():
+	var btn_font = DynamicFont.new()
+	btn_font.font_data = load("res://assets/ARIAL.TTF")
+	btn_font.size = 15
+	
+	var title_font = DynamicFont.new()
+	title_font.font_data = load("res://assets/ARIAL.TTF")
+	title_font.size = 20
+
+	guide_panel = PanelContainer.new()
+	guide_panel.rect_min_size = Vector2(660, 470)
+	guide_panel.set_anchors_preset(Control.PRESET_CENTER)
+	guide_panel.margin_left = -330
+	guide_panel.margin_top = -235
+	guide_panel.margin_right = 330
+	guide_panel.margin_bottom = 235
+	
+	var panel_tex = load("res://assets/others/formal_dialog_panel_base_v1_1024x640.png")
+	if panel_tex:
+		var style = StyleBoxTexture.new()
+		style.texture = panel_tex
+		style.margin_left = 45
+		style.margin_right = 45
+		style.margin_top = 40
+		style.margin_bottom = 40
+		style.content_margin_left = 86
+		style.content_margin_right = 86
+		style.content_margin_top = 86
+		style.content_margin_bottom = 68
+		guide_panel.add_stylebox_override("panel", style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_constant_override("separation", 8)
+	guide_panel.add_child(vbox)
+	
+	var lbl_title = Label.new()
+	lbl_title.text = "HƯỚNG DẪN CHƠI & ĐIỀU KHIỂN"
+	lbl_title.align = Label.ALIGN_CENTER
+	lbl_title.add_font_override("font", title_font)
+	lbl_title.add_color_override("font_color", Color(0.25, 0.15, 0.05))
+	vbox.add_child(lbl_title)
+	
+	var rtl = RichTextLabel.new()
+	rtl.bbcode_enabled = true
+	rtl.rect_min_size = Vector2(480, 225)
+	rtl.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rtl.add_font_override("normal_font", btn_font)
+	rtl.add_color_override("default_color", Color(0.2, 0.12, 0.05))
+	rtl.bbcode_text = "• [color=#8B0000]Di chuyển:[/color] Phím W, A, S, D hoặc Phím mũi tên (hoặc kéo Joystick ảo trên màn hình).\n" \
+		+ "• [color=#8B0000]Tương tác & Trò chuyện:[/color] Đứng gần cư dân và nhấn phím [E] (hoặc nút tròn E).\n" \
+		+ "• [color=#8B0000]Điều khiển Camera:[/color] Lăn chuột để Phóng to / Thu nhỏ; Giữ Chuột phải kéo để xem bản đồ.\n" \
+		+ "• [color=#8B0000]Phím tắt tiện ích:[/color] Nhấn [Tab] hoặc [J] mở Nhật ký; nhấn [ESC] mở nhanh Cài đặt.\n\n" \
+		+ "[color=#004d00]★ CẨM NANG KHÁM PHÁ THỊ TRẤN:[/color]\n" \
+		+ "1. Nhận nhiệm vụ từ các cư dân để kiếm Xu thưởng.\n" \
+		+ "2. Dùng Xu mua Cà phê, Trái táo, Hoa tại Quán Cafe và Chợ.\n" \
+		+ "3. Tặng quà (🎁) hoặc trò chuyện mỗi ngày để tăng Trái Tim (♥). Khi đạt 2♥ và 4♥, cư dân sẽ bật mí những bí mật động trời của thị trấn!"
+	vbox.add_child(rtl)
+	
+	var btn_close = Button.new()
+	btn_close.text = "Đã Hiểu (Đóng)"
+	btn_close.rect_min_size = Vector2(160, 36)
+	btn_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	btn_close.add_font_override("font", btn_font)
+	UIUtils.style_button(btn_close, Color(0.25, 0.48, 0.28))
+	btn_close.connect("pressed", self, "_on_guide_close_pressed")
+	vbox.add_child(btn_close)
+	
+	guide_panel.hide()
+	add_child(guide_panel)
+
 func _on_settings_close_pressed():
 	settings_panel.hide()
 
-func _on_continue_pressed():
+func _on_guide_pressed():
+	settings_panel.hide()
+	guide_panel.show()
+
+func _on_guide_close_pressed():
+	guide_panel.hide()
+
+func _fade_and_enter_world():
+	if menu_tween and menu_fade:
+		menu_fade.mouse_filter = Control.MOUSE_FILTER_STOP
+		menu_tween.stop_all()
+		menu_tween.interpolate_property(menu_fade, "color:a", menu_fade.color.a, 1.0, 0.45, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
+		menu_tween.start()
+		yield(menu_tween, "tween_completed")
 	QuestUI.offset = Vector2(0, 0)
 	JournalUI.offset = Vector2(0, 0)
 	ChatUI.offset = Vector2(0, 0)
-	SaveManager.load_requested = true
 	get_tree().change_scene("res://game/world/World.tscn")
 
+func _on_continue_pressed():
+	if is_transitioning:
+		return
+	is_transitioning = true
+	SaveManager.load_requested = true
+	_fade_and_enter_world()
+
 func _on_start_pressed():
+	if is_transitioning:
+		return
+	is_transitioning = true
 	# Xóa save cũ đi và reset
 	SaveManager.delete_save()
-	
-	QuestUI.offset = Vector2(0, 0)
-	JournalUI.offset = Vector2(0, 0)
-	ChatUI.offset = Vector2(0, 0)
 	
 	# Reset singletons
 	QuestManager.active_quests.clear()
@@ -242,9 +363,10 @@ func _on_start_pressed():
 	TimeManager.week_day = 0
 	TimeManager.calendar_events.clear()
 	
-	get_tree().change_scene("res://game/world/World.tscn")
+	_fade_and_enter_world()
 
 func _on_settings_pressed():
+	guide_panel.hide()
 	settings_panel.show()
 
 func _on_quit_pressed():

@@ -65,7 +65,12 @@ func _ready():
 		
 	var mc = load("res://game/ui/mobile_controls.gd").new()
 	add_child(mc)
-		
+	
+	_init_guide_panel()
+	_init_screen_fade()
+	call_deferred("_init_save_state")
+
+func _init_save_state():
 	if SaveManager.has_save():
 		SaveManager.apply_save_data()
 	else:
@@ -283,6 +288,24 @@ func _init_god_mode_ui():
 	btn_save.connect("pressed", self, "_on_save_game_pressed", [btn_save])
 	audio_options.add_child(btn_save)
 	
+	var btn_guide = Button.new()
+	btn_guide.name = "BtnGuide"
+	btn_guide.text = "❓ Hướng Dẫn"
+	btn_guide.rect_min_size = Vector2(130, 32)
+	btn_guide.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_guide, Color(0.25, 0.42, 0.55))
+	btn_guide.connect("pressed", self, "_on_guide_toggle")
+	audio_options.add_child(btn_guide)
+	
+	var btn_main_menu = Button.new()
+	btn_main_menu.name = "BtnMainMenu"
+	btn_main_menu.text = "🏠 Menu Chính"
+	btn_main_menu.rect_min_size = Vector2(130, 32)
+	btn_main_menu.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_main_menu, Color(0.55, 0.25, 0.25))
+	btn_main_menu.connect("pressed", self, "_on_return_main_menu")
+	audio_options.add_child(btn_main_menu)
+	
 	var btn_settings = Button.new()
 	btn_settings.text = "⚙️ Cài Đặt"
 	btn_settings.rect_min_size = Vector2(130, 32)
@@ -318,6 +341,136 @@ func _init_god_mode_ui():
 	UIUtils.style_button(btn_rent, Color(0.8, 0.6, 0.1))
 	btn_rent.connect("pressed", self, "_toggle_event", ["rent"])
 	event_panel.add_child(btn_rent)
+
+var guide_panel: PanelContainer = null
+var fade_rect: ColorRect = null
+var fade_tween: Tween = null
+var is_teleporting: bool = false
+
+func _init_guide_panel():
+	var ui_canvas = $UICanvas
+	guide_panel = PanelContainer.new()
+	guide_panel.name = "GuidePanel"
+	guide_panel.rect_min_size = Vector2(520, 360)
+	guide_panel.set_anchors_preset(Control.PRESET_CENTER)
+	guide_panel.margin_left = -260
+	guide_panel.margin_top = -180
+	guide_panel.margin_right = 260
+	guide_panel.margin_bottom = 180
+	
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.12, 0.14, 0.18, 0.96)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.85, 0.72, 0.38)
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	style.corner_radius_bottom_left = 10
+	style.corner_radius_bottom_right = 10
+	style.content_margin_left = 24
+	style.content_margin_right = 24
+	style.content_margin_top = 20
+	style.content_margin_bottom = 20
+	guide_panel.add_stylebox_override("panel", style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_constant_override("separation", 12)
+	guide_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "📖 HƯỚNG DẪN CHƠI & ĐIỀU KHIỂN"
+	title.align = Label.ALIGN_CENTER
+	title.add_font_override("font", npc_board_font)
+	title.add_color_override("font_color", Color(1.0, 0.88, 0.35))
+	vbox.add_child(title)
+	
+	var rtl = RichTextLabel.new()
+	rtl.bbcode_enabled = true
+	rtl.rect_min_size = Vector2(470, 230)
+	rtl.add_font_override("normal_font", npc_board_font)
+	rtl.bbcode_text = "[color=#88CCFF]• Di chuyển:[/color] Phím [color=#FFFF88]W, A, S, D[/color] hoặc Phím mũi tên (hoặc kéo Joystick ảo bên trái màn hình).\n" \
+		+ "[color=#88CCFF]• Tương tác & Trò chuyện:[/color] Đứng gần NPC và nhấn phím [color=#FFFF88][E][/color] (hoặc nút tròn E trên màn hình).\n" \
+		+ "[color=#88CCFF]• Điều khiển Camera:[/color] Lăn chuột để Phóng to / Thu nhỏ; Giữ [color=#FFFF88]Chuột phải[/color] và kéo để quan sát toàn thị trấn.\n" \
+		+ "[color=#88CCFF]• Phím tắt tiện ích:[/color] Nhấn [color=#FFFF88][Tab][/color] hoặc [color=#FFFF88][J][/color] mở Nhật ký; nhấn [color=#FFFF88][ESC][/color] mở nhanh Cài đặt / Tạm dừng.\n\n" \
+		+ "[color=#FFAAFF]★ BÍ QUYẾT KHÁM PHÁ THỊ TRẤN:[/color]\n" \
+		+ "1. Trò chuyện với cư dân để nhận [color=#AAFFAA]Nhiệm vụ[/color] kiếm Xu thưởng.\n" \
+		+ "2. Dùng Xu mua Cà phê, Táo, Hoa tại Quán Cafe và Chợ.\n" \
+		+ "3. Bấm [color=#FF88AA]🎁 Tặng Quà[/color] hoặc chăm chỉ hỏi thăm mỗi ngày để tăng [color=#FF4444]Trái Tim ♥[/color]. Khi đạt mốc 2♥ và 4♥, cư dân sẽ tiết lộ những bí mật động trời của thị trấn!"
+	vbox.add_child(rtl)
+	
+	var btn_close = Button.new()
+	btn_close.text = "Đã Hiểu (Đóng)"
+	btn_close.rect_min_size = Vector2(160, 34)
+	btn_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	btn_close.add_font_override("font", npc_board_font)
+	UIUtils.style_button(btn_close, Color(0.25, 0.5, 0.3))
+	btn_close.connect("pressed", self, "_on_guide_toggle")
+	vbox.add_child(btn_close)
+	
+	guide_panel.hide()
+	ui_canvas.add_child(guide_panel)
+
+func _init_screen_fade():
+	var fade_canvas = CanvasLayer.new()
+	fade_canvas.name = "FadeCanvas"
+	fade_canvas.layer = 100
+	add_child(fade_canvas)
+	
+	fade_rect = ColorRect.new()
+	fade_rect.name = "ScreenFade"
+	fade_rect.set_anchors_preset(Control.PRESET_WIDE)
+	fade_rect.color = Color(0, 0, 0, 1.0)
+	fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fade_canvas.add_child(fade_rect)
+	
+	fade_tween = Tween.new()
+	add_child(fade_tween)
+	
+	# Chờ 1 nhịp khung hình để map và dữ liệu save khởi tạo xong dưới màn đen rồi mới mở màn mượt mà
+	yield(get_tree(), "idle_frame")
+	if is_instance_valid(fade_tween) and is_instance_valid(fade_rect):
+		fade_tween.interpolate_property(fade_rect, "color:a", 1.0, 0.0, 0.55, Tween.TRANS_SINE, Tween.EASE_OUT)
+		fade_tween.start()
+
+func teleport_with_fade(target_pos: Vector2):
+	if is_teleporting:
+		return
+	is_teleporting = true
+	
+	if fade_tween and fade_rect:
+		fade_tween.stop_all()
+		fade_tween.interpolate_property(fade_rect, "color:a", fade_rect.color.a, 1.0, 0.18, Tween.TRANS_SINE, Tween.EASE_IN)
+		fade_tween.start()
+		yield(fade_tween, "tween_completed")
+		
+	global_position = target_pos
+	camera.global_position = target_pos
+	
+	if fade_tween and fade_rect:
+		fade_tween.interpolate_property(fade_rect, "color:a", 1.0, 0.0, 0.25, Tween.TRANS_SINE, Tween.EASE_OUT)
+		fade_tween.start()
+		yield(fade_tween, "tween_completed")
+		
+	yield(get_tree().create_timer(0.15), "timeout")
+	is_teleporting = false
+
+func _on_guide_toggle():
+	if guide_panel:
+		guide_panel.visible = !guide_panel.visible
+
+func _on_return_main_menu():
+	# Tự động lưu tiến trình trước khi về Menu chính
+	SaveManager.save_game()
+	if ChatUI.panel.visible:
+		ChatUI._on_close_pressed()
+	if fade_tween and fade_rect:
+		fade_tween.stop_all()
+		fade_tween.interpolate_property(fade_rect, "color:a", fade_rect.color.a, 1.0, 0.25, Tween.TRANS_SINE, Tween.EASE_IN)
+		fade_tween.start()
+		yield(fade_tween, "tween_completed")
+	get_tree().change_scene("res://game/ui/MainMenu.tscn")
 
 func _on_weather_selected(idx: int):
 	var weather_states = ["SUNNY", "RAIN", "STORM", "SNOW", "FOG"]
@@ -581,9 +734,21 @@ func _is_mouse_over_scroll_ui() -> bool:
 	var nb = $UICanvas.get_node_or_null("NPCBoard")
 	if nb and nb.visible and nb.get_global_rect().has_point(m_pos):
 		return true
+	if guide_panel and guide_panel.visible and guide_panel.get_global_rect().has_point(m_pos):
+		return true
 	return false
 
 func _input(event):
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.scancode == KEY_ESCAPE:
+			if ChatUI.panel.visible:
+				ChatUI._on_close_pressed()
+			elif guide_panel and guide_panel.visible:
+				guide_panel.hide()
+			else:
+				_on_settings_toggle()
+			return
+			
 	if event is InputEventMouseButton:
 		# Zoom to nhỏ mượt mà, chỉ nhận khi event.pressed == true để không bị kích hoạt 2 lần
 		if event.pressed:
