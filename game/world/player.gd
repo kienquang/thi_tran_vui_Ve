@@ -29,6 +29,7 @@ func _ready():
 	
 	_init_npc_board()
 	_init_god_mode_ui()
+	_init_camera_zoom_ui()
 	QuestUI.update_coins(coins)
 	
 	reset_cam_btn.hide()
@@ -388,11 +389,12 @@ func _init_guide_panel():
 	
 	var rtl = RichTextLabel.new()
 	rtl.bbcode_enabled = true
-	rtl.rect_min_size = Vector2(470, 230)
+	rtl.rect_min_size = Vector2(470, 240)
 	rtl.add_font_override("normal_font", npc_board_font)
 	rtl.bbcode_text = "[color=#88CCFF]• Di chuyển:[/color] Phím [color=#FFFF88]W, A, S, D[/color] hoặc Phím mũi tên (hoặc kéo Joystick ảo bên trái màn hình).\n" \
 		+ "[color=#88CCFF]• Tương tác & Trò chuyện:[/color] Đứng gần NPC và nhấn phím [color=#FFFF88][E][/color] (hoặc nút tròn E trên màn hình).\n" \
-		+ "[color=#88CCFF]• Điều khiển Camera:[/color] Lăn chuột để Phóng to / Thu nhỏ; Giữ [color=#FFFF88]Chuột phải[/color] và kéo để quan sát toàn thị trấn.\n" \
+		+ "[color=#88CCFF]• Camera (PC):[/color] Lăn chuột để Phóng to / Thu nhỏ; Giữ [color=#FFFF88]Chuột phải[/color] và kéo để quan sát toàn thị trấn.\n" \
+		+ "[color=#88CCFF]• Camera (Điện thoại):[/color] Dùng 2 ngón tay chụm lại/mở ra hoặc bấm nút [color=#FFFF88][➕]/[➖][/color] để Zoom; Vuốt nửa phải màn hình để kéo xem toàn thị trấn (bấm nút [color=#FFFF88]Về Nhân Vật[/color] để quay lại).\n" \
 		+ "[color=#88CCFF]• Phím tắt tiện ích:[/color] Nhấn [color=#FFFF88][Tab][/color] hoặc [color=#FFFF88][J][/color] mở Nhật ký; nhấn [color=#FFFF88][ESC][/color] mở nhanh Cài đặt / Tạm dừng.\n\n" \
 		+ "[color=#FFAAFF]★ BÍ QUYẾT KHÁM PHÁ THỊ TRẤN:[/color]\n" \
 		+ "1. Trò chuyện với cư dân để nhận [color=#AAFFAA]Nhiệm vụ[/color] kiếm Xu thưởng.\n" \
@@ -411,6 +413,93 @@ func _init_guide_panel():
 	
 	guide_panel.hide()
 	ui_canvas.add_child(guide_panel)
+
+var is_holding_zoom_in = false
+var is_holding_zoom_out = false
+
+func _init_camera_zoom_ui():
+	var ui_canvas = $UICanvas
+	
+	var zoom_controls = VBoxContainer.new()
+	zoom_controls.name = "ZoomControls"
+	zoom_controls.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	zoom_controls.margin_left = -62
+	zoom_controls.margin_right = -14
+	zoom_controls.margin_top = -54
+	zoom_controls.margin_bottom = 54
+	zoom_controls.add_constant_override("separation", 10)
+	ui_canvas.add_child(zoom_controls)
+	
+	var btn_font = DynamicFont.new()
+	btn_font.font_data = load("res://assets/ARIAL.TTF")
+	btn_font.size = 20
+	
+	var normal_style = StyleBoxFlat.new()
+	normal_style.bg_color = Color(0.12, 0.14, 0.18, 0.68)
+	normal_style.border_width_left = 2
+	normal_style.border_width_right = 2
+	normal_style.border_width_top = 2
+	normal_style.border_width_bottom = 2
+	normal_style.border_color = Color(0.85, 0.88, 0.95, 0.6)
+	normal_style.corner_radius_top_left = 24
+	normal_style.corner_radius_top_right = 24
+	normal_style.corner_radius_bottom_left = 24
+	normal_style.corner_radius_bottom_right = 24
+	
+	var pressed_style = normal_style.duplicate()
+	pressed_style.bg_color = Color(0.25, 0.35, 0.5, 0.85)
+	
+	var btn_zoom_in = Button.new()
+	btn_zoom_in.name = "BtnZoomIn"
+	btn_zoom_in.text = "➕"
+	btn_zoom_in.rect_min_size = Vector2(48, 48)
+	btn_zoom_in.focus_mode = Control.FOCUS_NONE
+	btn_zoom_in.add_font_override("font", btn_font)
+	btn_zoom_in.add_stylebox_override("normal", normal_style)
+	btn_zoom_in.add_stylebox_override("hover", normal_style)
+	btn_zoom_in.add_stylebox_override("pressed", pressed_style)
+	btn_zoom_in.add_stylebox_override("focus", StyleBoxEmpty.new())
+	btn_zoom_in.connect("pressed", self, "_on_zoom_in_pressed")
+	btn_zoom_in.connect("button_down", self, "_on_zoom_in_down")
+	btn_zoom_in.connect("button_up", self, "_on_zoom_in_up")
+	zoom_controls.add_child(btn_zoom_in)
+	
+	var btn_zoom_out = Button.new()
+	btn_zoom_out.name = "BtnZoomOut"
+	btn_zoom_out.text = "➖"
+	btn_zoom_out.rect_min_size = Vector2(48, 48)
+	btn_zoom_out.focus_mode = Control.FOCUS_NONE
+	btn_zoom_out.add_font_override("font", btn_font)
+	btn_zoom_out.add_stylebox_override("normal", normal_style)
+	btn_zoom_out.add_stylebox_override("hover", normal_style)
+	btn_zoom_out.add_stylebox_override("pressed", pressed_style)
+	btn_zoom_out.add_stylebox_override("focus", StyleBoxEmpty.new())
+	btn_zoom_out.connect("pressed", self, "_on_zoom_out_pressed")
+	btn_zoom_out.connect("button_down", self, "_on_zoom_out_down")
+	btn_zoom_out.connect("button_up", self, "_on_zoom_out_up")
+	zoom_controls.add_child(btn_zoom_out)
+
+func _on_zoom_in_pressed():
+	desired_zoom -= Vector2(0.15, 0.15)
+	desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+	desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
+
+func _on_zoom_out_pressed():
+	desired_zoom += Vector2(0.15, 0.15)
+	desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+	desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
+
+func _on_zoom_in_down():
+	is_holding_zoom_in = true
+
+func _on_zoom_in_up():
+	is_holding_zoom_in = false
+
+func _on_zoom_out_down():
+	is_holding_zoom_out = true
+
+func _on_zoom_out_up():
+	is_holding_zoom_out = false
 
 func _init_screen_fade():
 	var fade_canvas = CanvasLayer.new()
@@ -592,6 +681,15 @@ func update_npc_board():
 		list.add_child(space)
 
 func _physics_process(delta):
+	if is_holding_zoom_in:
+		desired_zoom -= Vector2(0.6, 0.6) * delta
+		desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+		desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
+	elif is_holding_zoom_out:
+		desired_zoom += Vector2(0.6, 0.6) * delta
+		desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+		desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
+
 	if Engine.get_frames_drawn() % 60 == 0:
 		var board = $UICanvas.get_node_or_null("NPCBoard")
 		if board and board.visible:
@@ -738,6 +836,31 @@ func _is_mouse_over_scroll_ui() -> bool:
 		return true
 	return false
 
+var touch_points = {}
+var prev_pinch_dist = -1.0
+var prev_pinch_center = Vector2.ZERO
+var is_touch_panning = false
+
+func _is_pos_over_ui(pos: Vector2) -> bool:
+	if _is_mouse_over_scroll_ui():
+		return true
+	if reset_cam_btn and reset_cam_btn.visible and reset_cam_btn.get_global_rect().has_point(pos):
+		return true
+	var zc = $UICanvas.get_node_or_null("ZoomControls")
+	if zc and zc.visible and zc.get_global_rect().has_point(pos):
+		return true
+	var vp = get_viewport_rect().size
+	# Vùng nút Cài đặt ở góc dưới phải
+	if pos.x > (vp.x - 160) and pos.y > (vp.y - 70):
+		return true
+	# Vùng nút tương tác E
+	if pos.x > (vp.x - 265) and pos.x < (vp.x - 150) and pos.y > (vp.y - 135) and pos.y < (vp.y - 30):
+		return true
+	# Vùng nút góc dưới trái (Nhật ký, Lịch trình NPC)
+	if pos.y > (vp.y - 50) and pos.x < 280:
+		return true
+	return false
+
 func _input(event):
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.scancode == KEY_ESCAPE:
@@ -774,6 +897,63 @@ func _input(event):
 		
 		# Dịch chuyển Camera theo độ vẩy chuột (nhân với độ zoom để trượt mượt mà)
 		camera.global_position -= event.relative * camera.zoom
+
+	# Xử lý cảm ứng chạm trên điện thoại (Touch Events)
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			if not _is_pos_over_ui(event.position):
+				touch_points[event.index] = event.position
+				if touch_points.size() == 2:
+					var pts = touch_points.values()
+					prev_pinch_dist = pts[0].distance_to(pts[1])
+					prev_pinch_center = (pts[0] + pts[1]) * 0.5
+					is_touch_panning = false
+				elif touch_points.size() == 1:
+					var screen_w = get_viewport_rect().size.x
+					# Chỉ kéo map 1 ngón tay khi chạm ở nửa phải màn hình (tránh đè lên joystick di chuyển)
+					if event.position.x > (screen_w * 0.45):
+						is_touch_panning = true
+					else:
+						is_touch_panning = false
+		else:
+			touch_points.erase(event.index)
+			if touch_points.size() < 2:
+				prev_pinch_dist = -1.0
+			if touch_points.empty():
+				is_touch_panning = false
+
+	if event is InputEventScreenDrag:
+		if touch_points.has(event.index):
+			touch_points[event.index] = event.position
+			
+		# Chạm 2 ngón tay: Chụm/mở để Zoom và cùng kéo để dời Camera
+		if touch_points.size() >= 2:
+			var pts = touch_points.values()
+			var cur_dist = pts[0].distance_to(pts[1])
+			var cur_center = (pts[0] + pts[1]) * 0.5
+			
+			if prev_pinch_dist > 0.0:
+				var dist_delta = cur_dist - prev_pinch_dist
+				if abs(dist_delta) > 1.5:
+					var zoom_delta = dist_delta * 0.005 * camera.zoom.x
+					desired_zoom -= Vector2(zoom_delta, zoom_delta)
+					desired_zoom.x = clamp(desired_zoom.x, 0.3, max_zoom)
+					desired_zoom.y = clamp(desired_zoom.y, 0.3, max_zoom)
+				
+				var center_delta = cur_center - prev_pinch_center
+				if center_delta.length() > 1.5:
+					camera_mode = "FREE"
+					reset_cam_btn.show()
+					camera.global_position -= center_delta * camera.zoom
+			
+			prev_pinch_dist = cur_dist
+			prev_pinch_center = cur_center
+			
+		# Chạm 1 ngón tay ở nửa phải màn hình: Kéo xem bản đồ
+		elif touch_points.size() == 1 and is_touch_panning:
+			camera_mode = "FREE"
+			reset_cam_btn.show()
+			camera.global_position -= event.relative * camera.zoom
 
 func _on_reset_cam_pressed():
 	camera_mode = "FOLLOW"

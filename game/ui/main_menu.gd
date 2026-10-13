@@ -300,7 +300,8 @@ func _init_guide_panel():
 	rtl.add_color_override("default_color", Color(0.2, 0.12, 0.05))
 	rtl.bbcode_text = "• [color=#8B0000]Di chuyển:[/color] Phím W, A, S, D hoặc Phím mũi tên (hoặc kéo Joystick ảo trên màn hình).\n" \
 		+ "• [color=#8B0000]Tương tác & Trò chuyện:[/color] Đứng gần cư dân và nhấn phím [E] (hoặc nút tròn E).\n" \
-		+ "• [color=#8B0000]Điều khiển Camera:[/color] Lăn chuột để Phóng to / Thu nhỏ; Giữ Chuột phải kéo để xem bản đồ.\n" \
+		+ "• [color=#8B0000]Camera (PC):[/color] Lăn chuột để Phóng to / Thu nhỏ; Giữ Chuột phải kéo để xem bản đồ.\n" \
+		+ "• [color=#8B0000]Camera (Mobile):[/color] Dùng 2 ngón tay chụm lại/mở ra hoặc bấm nút [➕]/[➖] để Zoom; Vuốt nửa phải màn hình để kéo xem bản đồ (bấm nút [Về Nhân Vật] để quay lại).\n" \
 		+ "• [color=#8B0000]Phím tắt tiện ích:[/color] Nhấn [Tab] hoặc [J] mở Nhật ký; nhấn [ESC] mở nhanh Cài đặt.\n\n" \
 		+ "[color=#004d00]★ CẨM NANG KHÁM PHÁ THỊ TRẤN:[/color]\n" \
 		+ "1. Nhận nhiệm vụ từ các cư dân để kiếm Xu thưởng.\n" \

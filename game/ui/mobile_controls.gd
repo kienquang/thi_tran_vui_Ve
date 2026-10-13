@@ -81,6 +81,8 @@ func _ready():
 	btn_interact.connect("button_up", self, "_on_interact_up")
 	add_child(btn_interact)
 
+var joy_touch_index = -1
+
 func _on_left_area_input(event):
 	if event is InputEventMouseButton or event is InputEventScreenTouch:
 		var is_pressed = event.pressed
@@ -90,25 +92,32 @@ func _on_left_area_input(event):
 			return
 			
 		if is_pressed:
-			joystick_active = true
-			joystick_center = ev_pos
-			joy_bg.rect_global_position = joystick_center - joy_bg.rect_size / 2
-			joy_bg.show()
-			joy_handle.rect_position = joy_bg.rect_size / 2 - joy_handle.rect_size / 2
+			if joy_touch_index == -1:
+				joy_touch_index = event.index if event is InputEventScreenTouch else 0
+				joystick_active = true
+				joystick_center = ev_pos
+				joy_bg.rect_global_position = joystick_center - joy_bg.rect_size / 2
+				joy_bg.show()
+				joy_handle.rect_position = joy_bg.rect_size / 2 - joy_handle.rect_size / 2
 		else:
-			joystick_active = false
-			joy_bg.hide()
-			_reset_joystick()
+			var cur_idx = event.index if event is InputEventScreenTouch else 0
+			if cur_idx == joy_touch_index:
+				joy_touch_index = -1
+				joystick_active = false
+				joy_bg.hide()
+				_reset_joystick()
 			
 	elif event is InputEventMouseMotion or event is InputEventScreenDrag:
 		if joystick_active:
-			var offset = event.position - joystick_center
-			if offset.length() > joystick_radius:
-				offset = offset.normalized() * joystick_radius
-			joy_handle.rect_position = (joy_bg.rect_size / 2) + offset - (joy_handle.rect_size / 2)
-			
-			joystick_vector = offset / joystick_radius
-			_update_actions()
+			var cur_idx = event.index if event is InputEventScreenDrag else 0
+			if cur_idx == joy_touch_index:
+				var offset = event.position - joystick_center
+				if offset.length() > joystick_radius:
+					offset = offset.normalized() * joystick_radius
+				joy_handle.rect_position = (joy_bg.rect_size / 2) + offset - (joy_handle.rect_size / 2)
+				
+				joystick_vector = offset / joystick_radius
+				_update_actions()
 
 var last_actions = {"ui_up": false, "ui_down": false, "ui_left": false, "ui_right": false}
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://assets/town.png" type="Texture" id=1]
 [ext_resource path="res://game/world/Player.tscn" type="PackedScene" id=2]
@@ -8,7 +8,6 @@
 [ext_resource path="res://assets/mix__h-neutral_hoodie__t-skirt_woman__b-neutral_hoodie__s-neutral_hoodie_walk_64.png" type="Texture" id=6]
 [ext_resource path="res://game/world/Door.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/world/ObstaclePoly.tscn" type="PackedScene" id=8]
-[ext_resource path="res://game/world/street_lamp.gd" type="Script" id=9]
 [ext_resource path="res://game/world/rooms/Dining Hall.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/world/rooms/Cafe.tscn" type="PackedScene" id=11]
 [ext_resource path="res://game/world/rooms/Workshop.tscn" type="PackedScene" id=12]
@@ -167,91 +166,69 @@ position = Vector2( 3323, 1917 )
 
 [node name="StreetLamp5" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 2983, 521 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp22" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 5781, 2863 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp23" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 5890, 1977 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp24" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 4154, 3138 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp25" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 3396, 3343 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp26" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 2631, 3333 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp12" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1968, 3349 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp13" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 4756, 2542 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp14" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 3980, 2555 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp15" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 2050, 2908 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp16" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1461, 2884 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp17" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1046, 2309 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp18" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1858, 2313 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp19" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 4513, 1894 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp20" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 4014, 1074 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp21" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1819, 732 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp6" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1401, 1679 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp7" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 1986, 1693 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp8" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 3086, 1106 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp9" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 2731, 1125 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp10" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 3235, 2412 )
-script = ExtResource( 9 )
 
 [node name="StreetLamp11" parent="Lamps" instance=ExtResource( 200 )]
 position = Vector2( 2621, 2439 )
-script = ExtResource( 9 )
 
 [node name="YSort" type="YSort" parent="."]
 
